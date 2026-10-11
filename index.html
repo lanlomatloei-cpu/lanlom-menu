@@ -83,7 +83,7 @@
     }
     .modal-overlay.active { display: block; }
     
-    /* ปุ่มย้อนกลับสี #c03ca8 ตัวหนังสือสีดำเข้ม */
+    /* ปุ่มย้อนกลับสี #c03ca8 */
     .btn-back-modal {
       display: inline-flex;
       align-items: center;
@@ -197,7 +197,7 @@
       padding-right: 4px;
     }
 
-    /* Image Viewer แบบแยก Layer และซูมเฉพาะภาพ */
+    /* Image Viewer Modal */
     .image-viewer {
       display: none;
       position: fixed;
@@ -212,10 +212,10 @@
 
     /* ปุ่มย้อนกลับมุมซ้ายบน ตรึงนิ่ง ไม่ขยายตาม */
     .btn-back-image {
-      position: fixed;
-      top: 16px;
-      left: 16px;
-      z-index: 10002;
+      position: fixed !important;
+      top: 16px !important;
+      left: 16px !important;
+      z-index: 999999 !important;
       display: inline-flex;
       align-items: center;
       gap: 8px;
@@ -230,9 +230,10 @@
       cursor: pointer;
       user-select: none;
       pointer-events: auto;
+      transform: none !important;
     }
     .btn-back-image:active {
-      transform: scale(0.96);
+      transform: scale(0.96) !important;
       background-color: #a0288b;
     }
 
@@ -583,6 +584,27 @@
       if (e.touches.length < 2) startDist = 0;
       if (e.touches.length === 0) isDragging = false;
     });
+
+    // ==========================================
+    // บล็อกคำสั่งซูมหน้าเว็บ Safari / iOS / Webview
+    // ==========================================
+    document.addEventListener('gesturestart', function(e) {
+      e.preventDefault();
+    }, { passive: false });
+
+    document.addEventListener('gesturechange', function(e) {
+      e.preventDefault();
+    }, { passive: false });
+
+    document.addEventListener('gestureend', function(e) {
+      e.preventDefault();
+    }, { passive: false });
+
+    window.addEventListener('touchmove', function(e) {
+      if (e.touches.length > 1) {
+        e.preventDefault();
+      }
+    }, { passive: false });
 
     // ==========================================
     // ตรวจสอบห้องว่าง VIP
