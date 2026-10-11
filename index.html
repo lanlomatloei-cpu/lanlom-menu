@@ -70,7 +70,7 @@
     .menu-card .icon { font-size: 24px; margin-bottom: 6px; }
     .footer { text-align: center; margin-top: 26px; font-size: 12px; color: #8c9ba5; }
 
-    /* Modal หน้าฟอร์มแบบเต็มจอ */
+    /* Modal Overlay */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -133,6 +133,51 @@
     }
     .btn-submit:disabled { background-color: #95a5a6; }
     .status-msg { margin-top: 14px; text-align: center; font-size: 14px; font-weight: 500; }
+
+    /* Room Status Cards */
+    .room-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      border: 1px solid #e1e8ed;
+      background: #ffffff;
+    }
+    .room-item.available {
+      border-color: #c8e6c9;
+      background: #f9fdfa;
+    }
+    .room-item.booked {
+      border-color: #ffcdd2;
+      background: #fff8f8;
+    }
+    .room-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 500;
+    }
+    .btn-book-room {
+      background: #2e7d32;
+      color: #ffffff;
+      border: none;
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .badge-booked {
+      color: #d32f2f;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 6px 10px;
+      background: #ffebee;
+      border-radius: 6px;
+    }
 
     /* Image Viewer */
     .image-viewer {
@@ -265,13 +310,15 @@
   <div id="modalRoom" class="modal-overlay">
     <button class="btn-back-modal" onclick="closeModal('modalRoom')">‹ ย้อนกลับไปเมนูหลัก</button>
     <div class="form-card">
-      <h3>🔍 เช็กห้องว่าง VIP</h3>
+      <h3>🔍 เช็กสถานะห้อง VIP</h3>
       <div class="form-group">
         <label>📅 เลือกวันที่ต้องการเช็ก</label>
         <input type="date" id="checkDate" onchange="checkRooms()">
       </div>
-      <div id="roomResult" style="margin-top:16px; padding:12px; background:#f0f7f2; border-radius:10px; font-size:14px; line-height:1.6;">
-        กำลังโหลดข้อมูล...
+      
+      <div id="roomDateHeader" style="margin: 14px 0 10px; font-weight:600; color:#1b4d3e; font-size:14px;"></div>
+      <div id="roomResultList">
+        <div style="text-align:center; padding:20px; color:#666;">กำลังตรวจสอบสถานะห้อง...</div>
       </div>
     </div>
   </div>
@@ -359,6 +406,60 @@
       document.getElementById('imageViewer').classList.remove('active');
     }
 
+    // ฟังก์ชันเช็กสถานะห้อง VIP และสร้างรายการ V1 - V5
+    function checkRooms() {
+      var dateVal = document.getElementById('checkDate').value;
+      var dateHeader = document.getElementById('roomDateHeader');
+      var listContainer = document.getElementById('roomResultList');
+      
+      listContainer.innerHTML = '<div style="text-align:center; padding:16px; color:#666;">กำลังตรวจสอบสถานะห้อง...</div>';
+
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({ action: "check_room", dateStr: dateVal })
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(res) {
+        if (res.success) {
+          dateHeader.innerText = "📅 ประจำวันที่: " + res.dateText;
+          var allVip = ["V1", "V2", "V3", "V4", "V5"];
+          var html = "";
+
+          allVip.forEach(function(room) {
+            var isAvailable = res.available.indexOf(room) !== -1;
+            if (isAvailable) {
+              html += '<div class="room-item available">' +
+                        '<div class="room-info"><span>🟢</span><b>ห้อง ' + room + '</b> (ว่าง)</div>' +
+                        '<button type="button" class="btn-book-room" onclick="bookThisRoom(\'' + room + '\', \'' + dateVal + '\')">จองห้องนี้</button>' +
+                      '</div>';
+            } else {
+              html += '<div class="room-item booked">' +
+                        '<div class="room-info"><span>🔴</span><b style="color:#777;">ห้อง ' + room + '</b></div>' +
+                        '<span class="badge-booked">ไม่ว่าง</span>' +
+                      '</div>';
+            }
+          });
+
+          listContainer.innerHTML = html;
+        } else {
+          listContainer.innerHTML = '<div style="text-align:center; color:#d32f2f; padding:16px;">เกิดข้อผิดพลาดในการโหลดข้อมูล</div>';
+        }
+      })
+      .catch(function() {
+        listContainer.innerHTML = '<div style="text-align:center; color:#d32f2f; padding:16px;">ไม่สามารถเชื่อมต่อระบบได้</div>';
+      });
+    }
+
+    // ฟังก์ชันกดจองห้องจากหน้านี้ -> ส่งค่าไปยังฟอร์มจองทันที
+    function bookThisRoom(roomName, dateVal) {
+      closeModal('modalRoom');
+      document.getElementById('bookDate').value = dateVal;
+      document.getElementById('bookTable').value = roomName;
+      openModal('modalBooking');
+      // เลื่อนฟอร์มขึ้นด้านบนสุด
+      document.getElementById('modalBooking').scrollTop = 0;
+    }
+
     // ฟังก์ชันส่งฟอร์มจอง
     function submitBooking(e) {
       e.preventDefault();
@@ -387,25 +488,6 @@
         status.style.color = "#2e7d32";
         status.innerText = "✅ ส่งข้อมูลการจองเรียบร้อยแล้วค่ะ";
       });
-    }
-
-    // ฟังก์ชันเช็กห้องว่าง
-    function checkRooms() {
-      var dateVal = document.getElementById('checkDate').value;
-      var box = document.getElementById('roomResult');
-      box.innerText = "กำลังตรวจสอบสถานะห้องว่าง...";
-
-      fetch(SCRIPT_URL, {
-        method: "POST",
-        body: JSON.stringify({ action: "check_room", dateStr: dateVal })
-      }).then(r => r.json()).then(res => {
-        if(res.success) {
-          box.innerHTML = "<b>📅 ประจำวันที่:</b> " + res.dateText + "<br><br>" +
-            (res.available.length > 0 ? "🟢 <b>ห้องที่ว่าง:</b> " + res.available.join(", ") : "🔴 <b>ห้อง VIP เต็มทุกห้องแล้วค่ะ</b>");
-        } else {
-          box.innerText = "เกิดข้อผิดพลาดในการโหลดข้อมูล";
-        }
-      }).catch(() => { box.innerText = "ไม่สามารถเชื่อมต่อระบบได้"; });
     }
 
     // ฟังก์ชันสั่งอาหาร
