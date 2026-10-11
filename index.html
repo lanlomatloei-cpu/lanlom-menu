@@ -98,85 +98,94 @@
     }
     .form-card {
       background: #ffffff;
-      padding: 20px 16px;
+      padding: 22px 18px;
       border-radius: 16px;
       box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-      max-width: 500px;
+      max-width: 480px;
       margin: 0 auto;
     }
-    .form-card h3 { color: #1b4d3e; margin-bottom: 16px; text-align: center; font-size: 18px; }
+    .form-card h3 { color: #1b4d3e; margin-bottom: 6px; text-align: center; font-size: 18px; }
+    .form-card .subtitle { color: #666; font-size: 12px; text-align: center; margin-bottom: 16px; }
     .form-group { margin-bottom: 14px; }
-    label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 14px; color: #2c3e50; }
+    label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 13.5px; color: #2c3e50; }
     input, select, textarea {
       width: 100%;
-      padding: 12px;
+      padding: 11px 12px;
       font-size: 15px;
       border: 1.5px solid #dcdfe6;
-      border-radius: 10px;
+      border-radius: 8px;
       background-color: #fff;
       outline: none;
     }
-    input:focus, select:focus, textarea:focus { border-color: #2e7d32; }
+    input:focus, select:focus, textarea:focus { border-color: #1b4d3e; }
     .row { display: flex; gap: 10px; }
     .row .form-group { flex: 1; }
     .btn-submit {
       width: 100%;
-      background-color: #2e7d32;
+      background-color: #1b4d3e;
       color: #ffffff;
       border: none;
-      padding: 14px;
-      font-size: 16px;
-      font-weight: 600;
-      border-radius: 10px;
+      padding: 12px;
+      font-size: 15px;
+      font-weight: 500;
+      border-radius: 8px;
       cursor: pointer;
-      margin-top: 10px;
+      margin-top: 6px;
     }
     .btn-submit:disabled { background-color: #95a5a6; }
     .status-msg { margin-top: 14px; text-align: center; font-size: 14px; font-weight: 500; }
 
-    /* Room Status Cards */
-    .room-item {
+    /* Room Status Cards ตามรูปแบบรูปเป๊ะ */
+    .date-status-badge {
+      text-align: center;
+      font-size: 12.5px;
+      color: #2c3e50;
+      font-weight: 500;
+      margin: 14px 0 12px;
+    }
+    .room-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 12px 14px;
-      margin-bottom: 10px;
-      border-radius: 10px;
-      border: 1px solid #e1e8ed;
-      background: #ffffff;
+      padding: 9px 12px;
+      margin-bottom: 8px;
+      border-radius: 6px;
+      font-size: 13.5px;
     }
-    .room-item.available {
-      border-color: #c8e6c9;
-      background: #f9fdfa;
+    .room-row.available {
+      background-color: #e8f5e9;
+      border: 1px solid #c8e6c9;
+      color: #1b5e20;
     }
-    .room-item.booked {
-      border-color: #ffcdd2;
-      background: #fff8f8;
+    .room-row.booked {
+      background-color: #ffebee;
+      border: 1px solid #ffcdd2;
+      color: #b71c1c;
     }
-    .room-info {
+    .room-title-area {
       display: flex;
       align-items: center;
-      gap: 10px;
-      font-size: 15px;
+      gap: 8px;
       font-weight: 500;
     }
-    .btn-book-room {
-      background: #2e7d32;
+    .room-title-area .dot {
+      font-size: 11px;
+    }
+    .btn-action-book {
+      background-color: #1b4d3e;
       color: #ffffff;
       border: none;
-      padding: 7px 14px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 500;
+      padding: 5px 12px;
+      border-radius: 4px;
+      font-size: 12.5px;
+      font-weight: 400;
       cursor: pointer;
     }
-    .badge-booked {
-      color: #d32f2f;
-      font-size: 13px;
-      font-weight: 500;
-      padding: 6px 10px;
-      background: #ffebee;
-      border-radius: 6px;
+    .text-action-booked {
+      color: #757575;
+      font-size: 12.5px;
+      font-weight: 400;
+      padding-right: 4px;
     }
 
     /* Image Viewer */
@@ -257,6 +266,7 @@
     <button class="btn-back-modal" onclick="closeModal('modalBooking')">‹ ย้อนกลับไปเมนูหลัก</button>
     <div class="form-card">
       <h3>📝 จองโต๊ะ / ห้อง VIP</h3>
+      <div class="subtitle">กรอกรายละเอียดเพื่อทำการจอง</div>
       <form onsubmit="submitBooking(event)">
         <div class="form-group">
           <label>📅 วันที่ต้องการจอง</label>
@@ -306,20 +316,23 @@
     </div>
   </div>
 
-  <!-- 2. Modal เช็กห้อง VIP -->
+  <!-- 2. Modal เช็กห้อง VIP (ดีไซน์รูปต้นฉบับเป๊ะ) -->
   <div id="modalRoom" class="modal-overlay">
     <button class="btn-back-modal" onclick="closeModal('modalRoom')">‹ ย้อนกลับไปเมนูหลัก</button>
     <div class="form-card">
-      <h3>🔍 เช็กสถานะห้อง VIP</h3>
-      <div class="form-group">
-        <label>📅 เลือกวันที่ต้องการเช็ก</label>
-        <input type="date" id="checkDate" onchange="checkRooms()">
-      </div>
+      <h3>🎤 ห้อง VIP ลานลม ชมเลย</h3>
+      <div class="subtitle">เลือกวันเพื่อตรวจสอบสถานะห้องว่าง (V1 - V5)</div>
       
-      <div id="roomDateHeader" style="margin: 14px 0 10px; font-weight:600; color:#1b4d3e; font-size:14px;"></div>
-      <div id="roomResultList">
-        <div style="text-align:center; padding:20px; color:#666;">กำลังตรวจสอบสถานะห้อง...</div>
+      <div class="form-group">
+        <label>📅 เลือกวันเดือนปีที่ต้องการตรวจสอบ</label>
+        <input type="date" id="checkDate">
       </div>
+
+      <button type="button" class="btn-submit" onclick="checkRooms()">ตรวจสอบห้องว่าง</button>
+
+      <div id="roomDateHeader" class="date-status-badge"></div>
+      
+      <div id="roomResultList"></div>
     </div>
   </div>
 
@@ -328,6 +341,7 @@
     <button class="btn-back-modal" onclick="closeModal('modalFood')">‹ ย้อนกลับไปเมนูหลัก</button>
     <div class="form-card">
       <h3>🍲 สั่งอาหารล่วงหน้า</h3>
+      <div class="subtitle">ระบุรายละเอียดการสั่งอาหาร</div>
       <form onsubmit="submitFood(event)">
         <div class="form-group">
           <label>📅 วันที่จองไว้</label>
@@ -356,6 +370,7 @@
     <button class="btn-back-modal" onclick="closeModal('modalCancel')">‹ ย้อนกลับไปเมนูหลัก</button>
     <div class="form-card">
       <h3>🗑️ ยกเลิกการจอง</h3>
+      <div class="subtitle">ระบุข้อมูลที่ตรงกับตอนจอง</div>
       <form onsubmit="submitCancel(event)">
         <div class="form-group">
           <label>📅 วันที่ทำการจอง</label>
@@ -394,9 +409,13 @@
 
     function openModal(id) {
       document.getElementById(id).classList.add('active');
-      if (id === 'modalRoom') checkRooms();
+      if (id === 'modalRoom') {
+        checkRooms();
+      }
     }
-    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+    function closeModal(id) { 
+      document.getElementById(id).classList.remove('active'); 
+    }
 
     function openImageViewer(url) {
       document.getElementById('viewerImage').src = url;
@@ -406,13 +425,14 @@
       document.getElementById('imageViewer').classList.remove('active');
     }
 
-    // ฟังก์ชันเช็กสถานะห้อง VIP และสร้างรายการ V1 - V5
+    // ฟังก์ชันเช็กสถานะห้อง VIP และสร้างรายการ V1 - V5 แบบในรูป
     function checkRooms() {
       var dateVal = document.getElementById('checkDate').value;
       var dateHeader = document.getElementById('roomDateHeader');
       var listContainer = document.getElementById('roomResultList');
       
-      listContainer.innerHTML = '<div style="text-align:center; padding:16px; color:#666;">กำลังตรวจสอบสถานะห้อง...</div>';
+      dateHeader.innerText = "กำลังตรวจสอบสถานะห้องว่าง...";
+      listContainer.innerHTML = "";
 
       fetch(SCRIPT_URL, {
         method: "POST",
@@ -421,46 +441,51 @@
       .then(function(r) { return r.json(); })
       .then(function(res) {
         if (res.success) {
-          dateHeader.innerText = "📅 ประจำวันที่: " + res.dateText;
+          dateHeader.innerText = "สถานะประจำวันที่: " + res.dateText;
           var allVip = ["V1", "V2", "V3", "V4", "V5"];
           var html = "";
 
           allVip.forEach(function(room) {
             var isAvailable = res.available.indexOf(room) !== -1;
             if (isAvailable) {
-              html += '<div class="room-item available">' +
-                        '<div class="room-info"><span>🟢</span><b>ห้อง ' + room + '</b> (ว่าง)</div>' +
-                        '<button type="button" class="btn-book-room" onclick="bookThisRoom(\'' + room + '\', \'' + dateVal + '\')">จองห้องนี้</button>' +
+              html += '<div class="room-row available">' +
+                        '<div class="room-title-area">' +
+                          '<span class="dot">🟢</span>' +
+                          '<span>ห้อง ' + room + ' : ว่าง</span>' +
+                        '</div>' +
+                        '<button type="button" class="btn-action-book" onclick="bookThisRoom(\'' + room + '\', \'' + dateVal + '\')">จองห้องนี้</button>' +
                       '</div>';
             } else {
-              html += '<div class="room-item booked">' +
-                        '<div class="room-info"><span>🔴</span><b style="color:#777;">ห้อง ' + room + '</b></div>' +
-                        '<span class="badge-booked">ไม่ว่าง</span>' +
+              html += '<div class="room-row booked">' +
+                        '<div class="room-title-area">' +
+                          '<span class="dot">🔴</span>' +
+                          '<span>ห้อง ' + room + ' : จองแล้ว</span>' +
+                        '</div>' +
+                        '<span class="text-action-booked">ไม่ว่าง</span>' +
                       '</div>';
             }
           });
 
           listContainer.innerHTML = html;
         } else {
-          listContainer.innerHTML = '<div style="text-align:center; color:#d32f2f; padding:16px;">เกิดข้อผิดพลาดในการโหลดข้อมูล</div>';
+          dateHeader.innerText = "เกิดข้อผิดพลาดในการตรวจสอบ";
         }
       })
       .catch(function() {
-        listContainer.innerHTML = '<div style="text-align:center; color:#d32f2f; padding:16px;">ไม่สามารถเชื่อมต่อระบบได้</div>';
+        dateHeader.innerText = "ไม่สามารถเชื่อมต่อระบบได้";
       });
     }
 
-    // ฟังก์ชันกดจองห้องจากหน้านี้ -> ส่งค่าไปยังฟอร์มจองทันที
+    // กด "จองห้องนี้" -> ส่ง วันที่ และ ห้อง ไปกรอกที่ฟอร์มจองโต๊ะทันที
     function bookThisRoom(roomName, dateVal) {
       closeModal('modalRoom');
       document.getElementById('bookDate').value = dateVal;
       document.getElementById('bookTable').value = roomName;
       openModal('modalBooking');
-      // เลื่อนฟอร์มขึ้นด้านบนสุด
       document.getElementById('modalBooking').scrollTop = 0;
     }
 
-    // ฟังก์ชันส่งฟอร์มจอง
+    // ส่งฟอร์มจอง
     function submitBooking(e) {
       e.preventDefault();
       var btn = document.getElementById('btnBookSubmit');
@@ -490,7 +515,7 @@
       });
     }
 
-    // ฟังก์ชันสั่งอาหาร
+    // ส่งอาหาร
     function submitFood(e) {
       e.preventDefault();
       var btn = document.getElementById('btnFoodSubmit');
@@ -518,7 +543,7 @@
       });
     }
 
-    // ฟังก์ชันยกเลิกจอง
+    // ยกเลิกจอง
     function submitCancel(e) {
       e.preventDefault();
       var btn = document.getElementById('btnCancelSubmit');
