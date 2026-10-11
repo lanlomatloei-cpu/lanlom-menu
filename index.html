@@ -197,20 +197,59 @@
       padding-right: 4px;
     }
 
-    /* Image Viewer */
+    /* Image Viewer Full Screen */
     .image-viewer {
       display: none;
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.9);
+      background: rgba(0, 0, 0, 0.94);
       z-index: 10000;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .image-viewer.active { display: block; }
+    
+    /* ปุ่มย้อนกลับมุมซ้ายบนของหน้าดูรูปภาพ */
+    .btn-back-image {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 10001;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #000000;
+      font-size: 14.5px;
+      font-weight: 700;
+      padding: 9px 18px;
+      background-color: #c03ca8;
+      border-radius: 25px;
+      border: none;
+      box-shadow: 0 4px 12px rgba(192, 60, 168, 0.5);
+      cursor: pointer;
+    }
+    .btn-back-image:active {
+      transform: scale(0.96);
+      background-color: #a0288b;
+    }
+
+    .image-wrapper {
+      min-height: 100%;
+      display: flex;
       align-items: center;
       justify-content: center;
-      padding: 14px;
+      padding: 70px 10px 24px 10px;
+      box-sizing: border-box;
     }
-    .image-viewer.active { display: flex; }
-    .image-viewer img { max-width: 100%; max-height: 85vh; border-radius: 8px; object-fit: contain; }
+    .image-wrapper img {
+      max-width: 100%;
+      height: auto;
+      max-height: 85vh;
+      border-radius: 8px;
+      object-fit: contain;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+    }
   </style>
 </head>
 <body>
@@ -312,277 +351,4 @@
               <option value="19:00">19:00</option>
               <option value="19:30">19:30</option>
               <option value="20:00">20:00</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>📞 เบอร์ติดต่อ</label>
-          <input type="tel" id="bookPhone" placeholder="เช่น 0812345678" required>
-        </div>
-        <button type="submit" id="btnBookSubmit" class="btn-submit">ยืนยันการจอง</button>
-        <div id="bookStatus" class="status-msg"></div>
-      </form>
-    </div>
-  </div>
-
-  <!-- 2. Modal เช็กห้อง VIP -->
-  <div id="modalRoom" class="modal-overlay">
-    <button class="btn-back-modal" onclick="closeModal('modalRoom')">‹ ย้อนกลับไปเมนูหลัก</button>
-    <div class="form-card">
-      <h3>🎤 ห้อง VIP ลานลม ชมเลย</h3>
-      <div class="subtitle">เลือกวันเพื่อตรวจสอบสถานะห้องว่าง (V1 - V5)</div>
-      
-      <div class="form-group">
-        <label>📅 เลือกวันเดือนปีที่ต้องการตรวจสอบ</label>
-        <input type="date" id="checkDate">
-      </div>
-
-      <button type="button" class="btn-submit" onclick="checkRooms()">ตรวจสอบห้องว่าง</button>
-
-      <div id="roomDateHeader" class="date-status-badge"></div>
-      
-      <div id="roomResultList"></div>
-    </div>
-  </div>
-
-  <!-- 3. Modal สั่งอาหารล่วงหน้า -->
-  <div id="modalFood" class="modal-overlay">
-    <button class="btn-back-modal" onclick="closeModal('modalFood')">‹ ย้อนกลับไปเมนูหลัก</button>
-    <div class="form-card">
-      <h3>🍲 สั่งอาหารล่วงหน้า</h3>
-      <div class="subtitle">ระบุรายละเอียดการสั่งอาหาร</div>
-      <form onsubmit="submitFood(event)">
-        <div class="form-group">
-          <label>📅 วันที่จองไว้</label>
-          <input type="date" id="foodDate" required>
-        </div>
-        <div class="form-group">
-          <label>🪑 โต๊ะ / ห้องที่จองไว้</label>
-          <input type="text" id="foodTable" placeholder="เช่น V1 หรือ โต๊ะ 5" required>
-        </div>
-        <div class="form-group">
-          <label>👤 ชื่อผู้จอง (ตรงกับที่ระบุตอนจอง)</label>
-          <input type="text" id="foodName" required>
-        </div>
-        <div class="form-group">
-          <label>📝 รายการอาหารและจำนวน (บรรทัดละ 1 เมนู)</label>
-          <textarea id="foodList" rows="5" placeholder="เช่น&#10;ต้มยำกุ้ง 1 ชาม&#10;ข้าวผัดปูจานใหญ่ 1" required></textarea>
-        </div>
-        <button type="submit" id="btnFoodSubmit" class="btn-submit">บันทึกรายการอาหาร</button>
-        <div id="foodStatus" class="status-msg"></div>
-      </form>
-    </div>
-  </div>
-
-  <!-- 4. Modal ยกเลิกการจอง -->
-  <div id="modalCancel" class="modal-overlay">
-    <button class="btn-back-modal" onclick="closeModal('modalCancel')">‹ ย้อนกลับไปเมนูหลัก</button>
-    <div class="form-card">
-      <h3>🗑️ ยกเลิกการจอง</h3>
-      <div class="subtitle">ระบุข้อมูลที่ตรงกับตอนจอง</div>
-      <form onsubmit="submitCancel(event)">
-        <div class="form-group">
-          <label>📅 วันที่ทำการจอง</label>
-          <input type="date" id="cancelDate" required>
-        </div>
-        <div class="form-group">
-          <label>🪑 โต๊ะ / ห้องที่จองไว้</label>
-          <input type="text" id="cancelTable" placeholder="เช่น V1 หรือ โต๊ะ 5" required>
-        </div>
-        <div class="form-group">
-          <label>👤 ชื่อผู้จอง</label>
-          <input type="text" id="cancelName" required>
-        </div>
-        <button type="submit" id="btnCancelSubmit" class="btn-submit" style="background-color:#d32f2f;">ยืนยันยกเลิกการจอง</button>
-        <div id="cancelStatus" class="status-msg"></div>
-      </form>
-    </div>
-  </div>
-
-  <!-- Image Viewer Modal -->
-  <div id="imageViewer" class="image-viewer" onclick="closeImageViewer()">
-    <img id="viewerImage" src="" alt="Menu Image" onclick="event.stopPropagation()">
-  </div>
-
-  <script>
-    var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwaqvpVM5EB3VYZtj88IMpMxcvNvfbDIFSyfIYzwfz0lxJlS2qG5xPjo6sYMDO3d3Ow/exec";
-    var psid = new URLSearchParams(window.location.search).get('psid') || '';
-
-    window.onload = function() {
-  var now = new Date();
-  var year = now.getFullYear();
-  var month = String(now.getMonth() + 1).padStart(2, '0');
-  var day = String(now.getDate()).padStart(2, '0');
-  var today = year + '-' + month + '-' + day;
-
-  document.getElementById('bookDate').value = today;
-  document.getElementById('checkDate').value = today;
-  document.getElementById('foodDate').value = today;
-  document.getElementById('cancelDate').value = today;
-};
-
-    function openModal(id) {
-      document.getElementById(id).classList.add('active');
-      if (id === 'modalRoom') {
-        checkRooms();
-      }
-    }
-    function closeModal(id) { 
-      document.getElementById(id).classList.remove('active'); 
-    }
-
-    function openImageViewer(url) {
-      document.getElementById('viewerImage').src = url;
-      document.getElementById('imageViewer').classList.add('active');
-    }
-    function closeImageViewer() {
-      document.getElementById('imageViewer').classList.remove('active');
-    }
-
-    // ฟังก์ชันเช็กสถานะห้อง VIP และสร้างรายการ V1 - V5
-    function checkRooms() {
-      var dateVal = document.getElementById('checkDate').value;
-      var dateHeader = document.getElementById('roomDateHeader');
-      var listContainer = document.getElementById('roomResultList');
-      
-      dateHeader.innerText = "กำลังตรวจสอบสถานะห้องว่าง...";
-      listContainer.innerHTML = "";
-
-      fetch(SCRIPT_URL, {
-        method: "POST",
-        body: JSON.stringify({ action: "check_room", dateStr: dateVal })
-      })
-      .then(function(r) { return r.json(); })
-      .then(function(res) {
-        if (res.success) {
-          dateHeader.innerText = "สถานะประจำวันที่: " + res.dateText;
-          var allVip = ["V1", "V2", "V3", "V4", "V5"];
-          var html = "";
-
-          allVip.forEach(function(room) {
-            var isAvailable = res.available.indexOf(room) !== -1;
-            if (isAvailable) {
-              html += '<div class="room-row available">' +
-                        '<div class="room-title-area">' +
-                          '<span class="dot">🟢</span>' +
-                          '<span>ห้อง ' + room + ' : ว่าง</span>' +
-                        '</div>' +
-                        '<button type="button" class="btn-action-book" onclick="bookThisRoom(\'' + room + '\', \'' + dateVal + '\')">จองห้องนี้</button>' +
-                      '</div>';
-            } else {
-              html += '<div class="room-row booked">' +
-                        '<div class="room-title-area">' +
-                          '<span class="dot">🔴</span>' +
-                          '<span>ห้อง ' + room + ' : จองแล้ว</span>' +
-                        '</div>' +
-                        '<span class="text-action-booked">ไม่ว่าง</span>' +
-                      '</div>';
-            }
-          });
-
-          listContainer.innerHTML = html;
-        } else {
-          dateHeader.innerText = "เกิดข้อผิดพลาดในการตรวจสอบ";
-        }
-      })
-      .catch(function() {
-        dateHeader.innerText = "ไม่สามารถเชื่อมต่อระบบได้";
-      });
-    }
-
-    // กด "จองห้องนี้" -> ส่ง วันที่ และ ห้อง ไปกรอกที่ฟอร์มจองโต๊ะทันที
-    function bookThisRoom(roomName, dateVal) {
-      closeModal('modalRoom');
-      document.getElementById('bookDate').value = dateVal;
-      document.getElementById('bookTable').value = roomName;
-      openModal('modalBooking');
-      document.getElementById('modalBooking').scrollTop = 0;
-    }
-
-    // ส่งฟอร์มจอง
-    function submitBooking(e) {
-      e.preventDefault();
-      var btn = document.getElementById('btnBookSubmit');
-      var status = document.getElementById('bookStatus');
-      btn.disabled = true; btn.innerText = "กำลังบันทึกข้อมูล...";
-      
-      fetch(SCRIPT_URL, {
-        method: "POST",
-        body: JSON.stringify({
-          action: "web_booking",
-          bookDate: document.getElementById('bookDate').value,
-          table: document.getElementById('bookTable').value,
-          name: document.getElementById('bookName').value,
-          pax: document.getElementById('bookPax').value,
-          time: document.getElementById('bookTime').value,
-          phone: document.getElementById('bookPhone').value,
-          psid: psid
-        })
-      }).then(r => r.json()).then(res => {
-        status.style.color = res.success ? "#2e7d32" : "#d32f2f";
-        status.innerText = (res.success ? "✅ " : "⚠️ ") + res.message;
-        if(res.success) { e.target.reset(); btn.innerText = "บันทึกเรียบร้อย"; }
-        else { btn.disabled = false; btn.innerText = "ยืนยันการจอง"; }
-      }).catch(() => {
-        status.style.color = "#2e7d32";
-        status.innerText = "✅ ส่งข้อมูลการจองเรียบร้อยแล้วค่ะ";
-      });
-    }
-
-    // ส่งอาหาร
-    function submitFood(e) {
-      e.preventDefault();
-      var btn = document.getElementById('btnFoodSubmit');
-      var status = document.getElementById('foodStatus');
-      btn.disabled = true; btn.innerText = "กำลังบันทึก...";
-
-      fetch(SCRIPT_URL, {
-        method: "POST",
-        body: JSON.stringify({
-          action: "web_food",
-          orderDate: document.getElementById('foodDate').value,
-          orderTable: document.getElementById('foodTable').value,
-          orderName: document.getElementById('foodName').value,
-          orderFood: document.getElementById('foodList').value,
-          psid: psid
-        })
-      }).then(r => r.json()).then(res => {
-        status.style.color = res.success ? "#2e7d32" : "#d32f2f";
-        status.innerText = (res.success ? "✅ " : "⚠️ ") + res.message;
-        if(res.success) { e.target.reset(); btn.innerText = "บันทึกเรียบร้อย"; }
-        else { btn.disabled = false; btn.innerText = "บันทึกรายการอาหาร"; }
-      }).catch(() => {
-        status.style.color = "#2e7d32";
-        status.innerText = "✅ บันทึกรายการอาหารเรียบร้อยแล้วค่ะ";
-      });
-    }
-
-    // ยกเลิกจอง
-    function submitCancel(e) {
-      e.preventDefault();
-      var btn = document.getElementById('btnCancelSubmit');
-      var status = document.getElementById('cancelStatus');
-      btn.disabled = true; btn.innerText = "กำลังตรวจสอบ...";
-
-      fetch(SCRIPT_URL, {
-        method: "POST",
-        body: JSON.stringify({
-          action: "web_cancel",
-          cancelDate: document.getElementById('cancelDate').value,
-          cancelTable: document.getElementById('cancelTable').value,
-          cancelName: document.getElementById('cancelName').value,
-          psid: psid
-        })
-      }).then(r => r.json()).then(res => {
-        status.style.color = res.success ? "#2e7d32" : "#d32f2f";
-        status.innerText = (res.success ? "✅ " : "⚠️ ") + res.message;
-        if(res.success) { e.target.reset(); btn.innerText = "ยกเลิกเรียบร้อย"; }
-        else { btn.disabled = false; btn.innerText = "ยืนยันยกเลิกการจอง"; }
-      }).catch(() => {
-        status.style.color = "#2e7d32";
-        status.innerText = "✅ ส่งคำขอยกเลิกเรียบร้อยแล้วค่ะ";
-      });
-    }
-  </script>
-</body>
-</html>
+            </select
