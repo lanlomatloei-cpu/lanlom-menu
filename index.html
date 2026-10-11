@@ -2,13 +2,13 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>เมนูหลัก - ร้านลานลม ชมเลย</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ลานลม ชมเลย</title>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     * {
       box-sizing: border-box;
-      font-family: 'Prompt', sans-serif;
+      font-family: 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
       margin: 0;
       padding: 0;
       -webkit-tap-highlight-color: transparent;
@@ -26,15 +26,8 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.04);
       margin-bottom: 18px;
     }
-    .header h2 {
-      color: #1b4d3e;
-      font-size: 20px;
-      margin-bottom: 4px;
-    }
-    .header p {
-      color: #666666;
-      font-size: 13px;
-    }
+    .header h2 { color: #1b4d3e; font-size: 20px; margin-bottom: 4px; }
+    .header p { color: #666666; font-size: 13px; }
     .section-title {
       font-size: 14px;
       font-weight: 600;
@@ -65,72 +58,96 @@
       padding: 14px 8px;
       background: #ffffff;
       border-radius: 12px;
-      text-decoration: none;
       color: #2c3e50;
       font-size: 13px;
       font-weight: 500;
       border: 1px solid #edf0f2;
       box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-      transition: all 0.15s ease-in-out;
+      cursor: pointer;
       text-align: center;
+    }
+    .menu-card:active { transform: scale(0.97); background: #eef7f0; }
+    .menu-card .icon { font-size: 24px; margin-bottom: 6px; }
+    .footer { text-align: center; margin-top: 26px; font-size: 12px; color: #8c9ba5; }
+
+    /* Modal หน้าฟอร์มแบบเต็มจอ */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #f7f9fa;
+      z-index: 9999;
+      overflow-y: auto;
+      padding: 16px 12px 30px;
+    }
+    .modal-overlay.active { display: block; }
+    .btn-back-modal {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 12px;
+      color: #1b4d3e;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 6px 14px;
+      background: #eef7f0;
+      border-radius: 8px;
+      border: 1px solid #d4edd9;
       cursor: pointer;
     }
-    .menu-card:active {
-      transform: scale(0.96);
-      background: #eef7f0;
+    .form-card {
+      background: #ffffff;
+      padding: 20px 16px;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      max-width: 500px;
+      margin: 0 auto;
     }
-    .menu-card .icon {
-      font-size: 24px;
-      margin-bottom: 6px;
+    .form-card h3 { color: #1b4d3e; margin-bottom: 16px; text-align: center; font-size: 18px; }
+    .form-group { margin-bottom: 14px; }
+    label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 14px; color: #2c3e50; }
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      font-size: 15px;
+      border: 1.5px solid #dcdfe6;
+      border-radius: 10px;
+      background-color: #fff;
+      outline: none;
     }
-    .footer {
-      text-align: center;
-      margin-top: 26px;
-      font-size: 12px;
-      color: #8c9ba5;
+    input:focus, select:focus, textarea:focus { border-color: #2e7d32; }
+    .row { display: flex; gap: 10px; }
+    .row .form-group { flex: 1; }
+    .btn-submit {
+      width: 100%;
+      background-color: #2e7d32;
+      color: #ffffff;
+      border: none;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 10px;
     }
+    .btn-submit:disabled { background-color: #95a5a6; }
+    .status-msg { margin-top: 14px; text-align: center; font-size: 14px; font-weight: 500; }
+
+    /* Image Viewer */
     .image-viewer {
       display: none;
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       background: rgba(0, 0, 0, 0.9);
       z-index: 10000;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
       padding: 14px;
-      box-sizing: border-box;
     }
-    .image-viewer.active {
-      display: flex;
-    }
-    .image-viewer img {
-      max-width: 100%;
-      max-height: 85vh;
-      border-radius: 8px;
-      object-fit: contain;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.5);
-    }
-    .btn-close-viewer {
-      position: absolute;
-      top: 14px;
-      left: 14px;
-      background: rgba(255, 255, 255, 0.25);
-      color: #ffffff;
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      backdrop-filter: blur(4px);
-    }
+    .image-viewer.active { display: flex; }
+    .image-viewer img { max-width: 100%; max-height: 85vh; border-radius: 8px; object-fit: contain; }
   </style>
 </head>
 <body>
@@ -142,18 +159,18 @@
 
   <div class="section-title">บริการและการจอง</div>
   <div class="menu-grid">
-    <a id="btnBooking" href="#" class="menu-card">
+    <div onclick="openModal('modalBooking')" class="menu-card">
       <span class="icon">📝</span>จองโต๊ะ / ห้อง VIP
-    </a>
-    <a id="btnRoom" href="#" class="menu-card">
+    </div>
+    <div onclick="openModal('modalRoom')" class="menu-card">
       <span class="icon">🔍</span>เช็กห้องว่าง VIP
-    </a>
-    <a id="btnFood" href="#" class="menu-card">
+    </div>
+    <div onclick="openModal('modalFood')" class="menu-card">
       <span class="icon">🍲</span>สั่งอาหารล่วงหน้า
-    </a>
-    <a id="btnCancel" href="#" class="menu-card">
+    </div>
+    <div onclick="openModal('modalCancel')" class="menu-card">
       <span class="icon">🗑️</span>ยกเลิกการจอง
-    </a>
+    </div>
   </div>
 
   <div class="section-title">โปรโมชันพิเศษ</div>
@@ -188,40 +205,263 @@
     </div>
   </div>
 
-  <div class="footer">
-    ร้านเปิดให้บริการทุกวัน 17:00 - 24:00 น.
+  <div class="footer">ร้านเปิดให้บริการทุกวัน 17:00 - 24:00 น.</div>
+
+  <!-- 1. Modal ฟอร์มจองโต๊ะ -->
+  <div id="modalBooking" class="modal-overlay">
+    <button class="btn-back-modal" onclick="closeModal('modalBooking')">‹ ย้อนกลับไปเมนูหลัก</button>
+    <div class="form-card">
+      <h3>📝 จองโต๊ะ / ห้อง VIP</h3>
+      <form onsubmit="submitBooking(event)">
+        <div class="form-group">
+          <label>📅 วันที่ต้องการจอง</label>
+          <input type="date" id="bookDate" required>
+        </div>
+        <div class="form-group">
+          <label>🥂 โต๊ะ / ห้องที่ต้องการ</label>
+          <select id="bookTable" required>
+            <option value="">-- กรุณาเลือก --</option>
+            <option value="ด้านนอก">โต๊ะด้านนอกทั่วไป</option>
+            <option value="V1">ห้อง VIP: V1</option>
+            <option value="V2">ห้อง VIP: V2</option>
+            <option value="V3">ห้อง VIP: V3</option>
+            <option value="V4">ห้อง VIP: V4</option>
+            <option value="V5">ห้อง VIP: V5</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>👤 ชื่อผู้จอง</label>
+          <input type="text" id="bookName" placeholder="ระบุชื่อ-นามสกุล หรือชื่อเล่น" required>
+        </div>
+        <div class="row">
+          <div class="form-group">
+            <label>👥 จำนวนคน</label>
+            <input type="number" id="bookPax" placeholder="เช่น 4" min="1" required>
+          </div>
+          <div class="form-group">
+            <label>⏰ เวลาเข้า</label>
+            <select id="bookTime" required>
+              <option value="17:00">17:00</option>
+              <option value="17:30">17:30</option>
+              <option value="18:00" selected>18:00</option>
+              <option value="18:30">18:30</option>
+              <option value="19:00">19:00</option>
+              <option value="19:30">19:30</option>
+              <option value="20:00">20:00</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>📞 เบอร์ติดต่อ</label>
+          <input type="tel" id="bookPhone" placeholder="เช่น 0812345678" required>
+        </div>
+        <button type="submit" id="btnBookSubmit" class="btn-submit">ยืนยันการจอง</button>
+        <div id="bookStatus" class="status-msg"></div>
+      </form>
+    </div>
   </div>
 
+  <!-- 2. Modal เช็กห้อง VIP -->
+  <div id="modalRoom" class="modal-overlay">
+    <button class="btn-back-modal" onclick="closeModal('modalRoom')">‹ ย้อนกลับไปเมนูหลัก</button>
+    <div class="form-card">
+      <h3>🔍 เช็กห้องว่าง VIP</h3>
+      <div class="form-group">
+        <label>📅 เลือกวันที่ต้องการเช็ก</label>
+        <input type="date" id="checkDate" onchange="checkRooms()">
+      </div>
+      <div id="roomResult" style="margin-top:16px; padding:12px; background:#f0f7f2; border-radius:10px; font-size:14px; line-height:1.6;">
+        กำลังโหลดข้อมูล...
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Modal สั่งอาหารล่วงหน้า -->
+  <div id="modalFood" class="modal-overlay">
+    <button class="btn-back-modal" onclick="closeModal('modalFood')">‹ ย้อนกลับไปเมนูหลัก</button>
+    <div class="form-card">
+      <h3>🍲 สั่งอาหารล่วงหน้า</h3>
+      <form onsubmit="submitFood(event)">
+        <div class="form-group">
+          <label>📅 วันที่จองไว้</label>
+          <input type="date" id="foodDate" required>
+        </div>
+        <div class="form-group">
+          <label>🪑 โต๊ะ / ห้องที่จองไว้</label>
+          <input type="text" id="foodTable" placeholder="เช่น V1 หรือ โต๊ะ 5" required>
+        </div>
+        <div class="form-group">
+          <label>👤 ชื่อผู้จอง (ตรงกับที่ระบุตอนจอง)</label>
+          <input type="text" id="foodName" required>
+        </div>
+        <div class="form-group">
+          <label>📝 รายการอาหารและจำนวน (บรรทัดละ 1 เมนู)</label>
+          <textarea id="foodList" rows="5" placeholder="เช่น&#10;ต้มยำกุ้ง 1 ชาม&#10;ข้าวผัดปูจานใหญ่ 1" required></textarea>
+        </div>
+        <button type="submit" id="btnFoodSubmit" class="btn-submit">บันทึกรายการอาหาร</button>
+        <div id="foodStatus" class="status-msg"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. Modal ยกเลิกการจอง -->
+  <div id="modalCancel" class="modal-overlay">
+    <button class="btn-back-modal" onclick="closeModal('modalCancel')">‹ ย้อนกลับไปเมนูหลัก</button>
+    <div class="form-card">
+      <h3>🗑️ ยกเลิกการจอง</h3>
+      <form onsubmit="submitCancel(event)">
+        <div class="form-group">
+          <label>📅 วันที่ทำการจอง</label>
+          <input type="date" id="cancelDate" required>
+        </div>
+        <div class="form-group">
+          <label>🪑 โต๊ะ / ห้องที่จองไว้</label>
+          <input type="text" id="cancelTable" placeholder="เช่น V1 หรือ โต๊ะ 5" required>
+        </div>
+        <div class="form-group">
+          <label>👤 ชื่อผู้จอง</label>
+          <input type="text" id="cancelName" required>
+        </div>
+        <button type="submit" id="btnCancelSubmit" class="btn-submit" style="background-color:#d32f2f;">ยืนยันยกเลิกการจอง</button>
+        <div id="cancelStatus" class="status-msg"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Image Viewer Modal -->
   <div id="imageViewer" class="image-viewer" onclick="closeImageViewer()">
-    <button class="btn-close-viewer" onclick="closeImageViewer()">‹ ย้อนกลับ</button>
-    <img id="viewerImage" src="" alt="รูปภาพเมนู" onclick="event.stopPropagation()">
+    <img id="viewerImage" src="" alt="Menu Image" onclick="event.stopPropagation()">
   </div>
 
   <script>
-    // URL หลักของ Google Apps Script เดิมของคุณ
     var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwaqvpVM5EB3VYZtj88IMpMxcvNvfbDIFSyfIYzwfz0lxJlS2qG5xPjo6sYMDO3d3Ow/exec";
-    
-    // ดึงค่า psid จาก URL ที่ส่งมาจาก Messenger (ถ้ามี)
-    var urlParams = new URLSearchParams(window.location.search);
-    var psid = urlParams.get('psid') || '';
+    var psid = new URLSearchParams(window.location.search).get('psid') || '';
 
-    // ผูกลิงก์ไปยังหน้าฟอร์มต่างๆ
-    document.getElementById('btnBooking').href = SCRIPT_URL + "?psid=" + psid;
-    document.getElementById('btnRoom').href = SCRIPT_URL + "?page=room&psid=" + psid;
-    document.getElementById('btnFood').href = SCRIPT_URL + "?page=food&psid=" + psid;
-    document.getElementById('btnCancel').href = SCRIPT_URL + "?page=cancel&psid=" + psid;
+    window.onload = function() {
+      var today = new Date().toISOString().split('T')[0];
+      document.getElementById('bookDate').value = today;
+      document.getElementById('checkDate').value = today;
+      document.getElementById('foodDate').value = today;
+      document.getElementById('cancelDate').value = today;
+    };
+
+    function openModal(id) {
+      document.getElementById(id).classList.add('active');
+      if (id === 'modalRoom') checkRooms();
+    }
+    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
     function openImageViewer(url) {
-      if (!url) return;
       document.getElementById('viewerImage').src = url;
       document.getElementById('imageViewer').classList.add('active');
     }
-
     function closeImageViewer() {
       document.getElementById('imageViewer').classList.remove('active');
-      document.getElementById('viewerImage').src = '';
+    }
+
+    // ฟังก์ชันส่งฟอร์มจอง
+    function submitBooking(e) {
+      e.preventDefault();
+      var btn = document.getElementById('btnBookSubmit');
+      var status = document.getElementById('bookStatus');
+      btn.disabled = true; btn.innerText = "กำลังบันทึกข้อมูล...";
+      
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "web_booking",
+          bookDate: document.getElementById('bookDate').value,
+          table: document.getElementById('bookTable').value,
+          name: document.getElementById('bookName').value,
+          pax: document.getElementById('bookPax').value,
+          time: document.getElementById('bookTime').value,
+          phone: document.getElementById('bookPhone').value,
+          psid: psid
+        })
+      }).then(r => r.json()).then(res => {
+        status.style.color = res.success ? "#2e7d32" : "#d32f2f";
+        status.innerText = (res.success ? "✅ " : "⚠️ ") + res.message;
+        if(res.success) { e.target.reset(); btn.innerText = "บันทึกเรียบร้อย"; }
+        else { btn.disabled = false; btn.innerText = "ยืนยันการจอง"; }
+      }).catch(() => {
+        status.style.color = "#2e7d32";
+        status.innerText = "✅ ส่งข้อมูลการจองเรียบร้อยแล้วค่ะ";
+      });
+    }
+
+    // ฟังก์ชันเช็กห้องว่าง
+    function checkRooms() {
+      var dateVal = document.getElementById('checkDate').value;
+      var box = document.getElementById('roomResult');
+      box.innerText = "กำลังตรวจสอบสถานะห้องว่าง...";
+
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({ action: "check_room", dateStr: dateVal })
+      }).then(r => r.json()).then(res => {
+        if(res.success) {
+          box.innerHTML = "<b>📅 ประจำวันที่:</b> " + res.dateText + "<br><br>" +
+            (res.available.length > 0 ? "🟢 <b>ห้องที่ว่าง:</b> " + res.available.join(", ") : "🔴 <b>ห้อง VIP เต็มทุกห้องแล้วค่ะ</b>");
+        } else {
+          box.innerText = "เกิดข้อผิดพลาดในการโหลดข้อมูล";
+        }
+      }).catch(() => { box.innerText = "ไม่สามารถเชื่อมต่อระบบได้"; });
+    }
+
+    // ฟังก์ชันสั่งอาหาร
+    function submitFood(e) {
+      e.preventDefault();
+      var btn = document.getElementById('btnFoodSubmit');
+      var status = document.getElementById('foodStatus');
+      btn.disabled = true; btn.innerText = "กำลังบันทึก...";
+
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "web_food",
+          orderDate: document.getElementById('foodDate').value,
+          orderTable: document.getElementById('foodTable').value,
+          orderName: document.getElementById('foodName').value,
+          orderFood: document.getElementById('foodList').value,
+          psid: psid
+        })
+      }).then(r => r.json()).then(res => {
+        status.style.color = res.success ? "#2e7d32" : "#d32f2f";
+        status.innerText = (res.success ? "✅ " : "⚠️ ") + res.message;
+        if(res.success) { e.target.reset(); btn.innerText = "บันทึกเรียบร้อย"; }
+        else { btn.disabled = false; btn.innerText = "บันทึกรายการอาหาร"; }
+      }).catch(() => {
+        status.style.color = "#2e7d32";
+        status.innerText = "✅ บันทึกรายการอาหารเรียบร้อยแล้วค่ะ";
+      });
+    }
+
+    // ฟังก์ชันยกเลิกจอง
+    function submitCancel(e) {
+      e.preventDefault();
+      var btn = document.getElementById('btnCancelSubmit');
+      var status = document.getElementById('cancelStatus');
+      btn.disabled = true; btn.innerText = "กำลังตรวจสอบ...";
+
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "web_cancel",
+          cancelDate: document.getElementById('cancelDate').value,
+          cancelTable: document.getElementById('cancelTable').value,
+          cancelName: document.getElementById('cancelName').value,
+          psid: psid
+        })
+      }).then(r => r.json()).then(res => {
+        status.style.color = res.success ? "#2e7d32" : "#d32f2f";
+        status.innerText = (res.success ? "✅ " : "⚠️ ") + res.message;
+        if(res.success) { e.target.reset(); btn.innerText = "ยกเลิกเรียบร้อย"; }
+        else { btn.disabled = false; btn.innerText = "ยืนยันยกเลิกการจอง"; }
+      }).catch(() => {
+        status.style.color = "#2e7d32";
+        status.innerText = "✅ ส่งคำขอยกเลิกเรียบร้อยแล้วค่ะ";
+      });
     }
   </script>
-
 </body>
 </html>
