@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>เมนูหลัก - ร้านลานลม ชมเลย</title>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Prompt', sans-serif;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      background: #f7f9fa;
+      color: #333333;
+      padding: 16px 14px 28px;
+    }
+    .header {
+      text-align: center;
+      padding: 14px 10px 18px;
+      background: #ffffff;
+      border-radius: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      margin-bottom: 18px;
+    }
+    .header h2 {
+      color: #1b4d3e;
+      font-size: 20px;
+      margin-bottom: 4px;
+    }
+    .header p {
+      color: #666666;
+      font-size: 13px;
+    }
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #27493a;
+      margin: 16px 0 10px 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .section-title::before {
+      content: "";
+      display: inline-block;
+      width: 4px;
+      height: 14px;
+      background: #2e7d32;
+      border-radius: 2px;
+    }
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    .menu-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 8px;
+      background: #ffffff;
+      border-radius: 12px;
+      text-decoration: none;
+      color: #2c3e50;
+      font-size: 13px;
+      font-weight: 500;
+      border: 1px solid #edf0f2;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+      transition: all 0.15s ease-in-out;
+      text-align: center;
+      cursor: pointer;
+    }
+    .menu-card:active {
+      transform: scale(0.96);
+      background: #eef7f0;
+    }
+    .menu-card .icon {
+      font-size: 24px;
+      margin-bottom: 6px;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 26px;
+      font-size: 12px;
+      color: #8c9ba5;
+    }
+    .image-viewer {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10000;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+      box-sizing: border-box;
+    }
+    .image-viewer.active {
+      display: flex;
+    }
+    .image-viewer img {
+      max-width: 100%;
+      max-height: 85vh;
+      border-radius: 8px;
+      object-fit: contain;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+    }
+    .btn-close-viewer {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      backdrop-filter: blur(4px);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h2>🍃 ลานลม ชมเลย</h2>
+    <p>บริการและเมนูอาหารออนไลน์</p>
+  </div>
+
+  <div class="section-title">บริการและการจอง</div>
+  <div class="menu-grid">
+    <a id="btnBooking" href="#" class="menu-card">
+      <span class="icon">📝</span>จองโต๊ะ / ห้อง VIP
+    </a>
+    <a id="btnRoom" href="#" class="menu-card">
+      <span class="icon">🔍</span>เช็กห้องว่าง VIP
+    </a>
+    <a id="btnFood" href="#" class="menu-card">
+      <span class="icon">🍲</span>สั่งอาหารล่วงหน้า
+    </a>
+    <a id="btnCancel" href="#" class="menu-card">
+      <span class="icon">🗑️</span>ยกเลิกการจอง
+    </a>
+  </div>
+
+  <div class="section-title">โปรโมชันพิเศษ</div>
+  <div class="menu-grid">
+    <div onclick="openImageViewer('https://lh3.googleusercontent.com/d/1EgK_3HTrl4lOFz_Iy40DzC_2RiFC2yZt')" class="menu-card">
+      <span class="icon">🍺</span>โปรเบียร์
+    </div>
+    <div onclick="openImageViewer('https://lh3.googleusercontent.com/d/1JjDQDx2FFstF-NajQ2LmxHFL2QqqL22S')" class="menu-card">
+      <span class="icon">🥃</span>โปรเหล้า
+    </div>
+    <div onclick="openImageViewer('https://lh3.googleusercontent.com/d/1-Mm-eoiWfXSYNlLYp-89Luknlgy4wGp9')" class="menu-card">
+      <span class="icon">🎂</span>โปรวันเกิด
+    </div>
+    <div onclick="openImageViewer('https://lh3.googleusercontent.com/d/1fALbdB7cNspp8dhFvXMDTt-pYdGVWNHL')" class="menu-card">
+      <span class="icon">🎤</span>โปรห้อง VIP
+    </div>
+  </div>
+
+  <div class="section-title">รายการเมนูและแผนที่</div>
+  <div class="menu-grid">
+    <div onclick="openImageViewer('https://lh3.googleusercontent.com/d/1bFBHNZVUjAFOBANF_WvKorIY8FMTfBq1')" class="menu-card">
+      <span class="icon">📖</span>เมนูอาหาร 1
+    </div>
+    <div onclick="openImageViewer('https://lh3.googleusercontent.com/d/18uie-OxWu8KJe6w586-cZn43b1dht8XL')" class="menu-card">
+      <span class="icon">🍽️</span>เมนูอาหาร 2
+    </div>
+    <div onclick="openImageViewer('https://lh3.googleusercontent.com/d/1bwFeqfJDy4qwkEaVzcJ6sM9NusO1aXtz')" class="menu-card">
+      <span class="icon">🍷</span>เมนูเครื่องดื่ม
+    </div>
+    <div onclick="openImageViewer('https://lh3.googleusercontent.com/d/1nLFefFZ8KdbaK0KOTJHXG9zlKQogQjZr')" class="menu-card">
+      <span class="icon">📍</span>พิกัดร้าน
+    </div>
+  </div>
+
+  <div class="footer">
+    ร้านเปิดให้บริการทุกวัน 17:00 - 24:00 น.
+  </div>
+
+  <div id="imageViewer" class="image-viewer" onclick="closeImageViewer()">
+    <button class="btn-close-viewer" onclick="closeImageViewer()">‹ ย้อนกลับ</button>
+    <img id="viewerImage" src="" alt="รูปภาพเมนู" onclick="event.stopPropagation()">
+  </div>
+
+  <script>
+    // URL หลักของ Google Apps Script เดิมของคุณ
+    var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwaqvpVM5EB3VYZtj88IMpMxcvNvfbDIFSyfIYzwfz0lxJlS2qG5xPjo6sYMDO3d3Ow/exec";
+    
+    // ดึงค่า psid จาก URL ที่ส่งมาจาก Messenger (ถ้ามี)
+    var urlParams = new URLSearchParams(window.location.search);
+    var psid = urlParams.get('psid') || '';
+
+    // ผูกลิงก์ไปยังหน้าฟอร์มต่างๆ
+    document.getElementById('btnBooking').href = SCRIPT_URL + "?psid=" + psid;
+    document.getElementById('btnRoom').href = SCRIPT_URL + "?page=room&psid=" + psid;
+    document.getElementById('btnFood').href = SCRIPT_URL + "?page=food&psid=" + psid;
+    document.getElementById('btnCancel').href = SCRIPT_URL + "?page=cancel&psid=" + psid;
+
+    function openImageViewer(url) {
+      if (!url) return;
+      document.getElementById('viewerImage').src = url;
+      document.getElementById('imageViewer').classList.add('active');
+    }
+
+    function closeImageViewer() {
+      document.getElementById('imageViewer').classList.remove('active');
+      document.getElementById('viewerImage').src = '';
+    }
+  </script>
+
+</body>
+</html>
