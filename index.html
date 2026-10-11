@@ -252,11 +252,11 @@
       max-height: 85vh;
       object-fit: contain;
       transform-origin: center center;
-      transition: transform 0.05s ease-out;
       user-select: none;
       -webkit-user-drag: none;
       box-shadow: 0 4px 20px rgba(0,0,0,0.6);
       border-radius: 8px;
+      will-change: transform;
     }
   </style>
 </head>
@@ -483,7 +483,7 @@
     }
 
     // ==========================================
-    // ระบบเปิด/ปิดดูรูปภาพ และการซูมเฉพาะตัวภาพ (คงค่า ไม่เด้งกลับ)
+    // ระบบเปิด/ปิดดูรูปภาพ และการซูมเฉพาะตัวภาพ (ล็อกสเกล 100% ไม่ดีดกลับ)
     // ==========================================
     var currentScale = 1;
     var posX = 0;
@@ -495,13 +495,19 @@
     var initialPosX = 0;
     var initialPosY = 0;
     var isDragging = false;
+    var isPinching = false;
     var lastTap = 0;
 
     var imgEl = document.getElementById('viewerImage');
     var containerEl = document.getElementById('imgContainer');
 
-    function updateImageTransform() {
-      imgEl.style.transform = 'translate(' + posX + 'px, ' + posY + 'px) scale(' + currentScale + ')';
+    function updateImageTransform(withTransition) {
+      if (withTransition) {
+        imgEl.style.transition = 'transform 0.2s cubic-bezier(0.25, 1, 0.5, 1)';
+      } else {
+        imgEl.style.transition = 'none';
+      }
+      imgEl.style.transform = 'translate3d(' + posX + 'px, ' + posY + 'px, 0) scale(' + currentScale + ')';
     }
 
     function openImageViewer(url) {
@@ -509,7 +515,7 @@
       baseScale = 1;
       posX = 0;
       posY = 0;
-      updateImageTransform();
+      updateImageTransform(false);
       imgEl.src = url;
       document.getElementById('imageViewer').classList.add('active');
       document.body.style.overflow = 'hidden';
@@ -522,14 +528,14 @@
       baseScale = 1;
       posX = 0;
       posY = 0;
-      updateImageTransform();
+      updateImageTransform(false);
     }
 
     // แตะ 2 ครั้งเพื่อซูมเข้า/ออก (Double Tap)
     containerEl.addEventListener('touchend', function(e) {
       var currentTime = new Date().getTime();
       var tapLength = currentTime - lastTap;
-      if (tapLength < 300 && tapLength > 0 && e.touches.length === 0) {
+      if (tapLength < 300 && tapLength > 0 && e.touches.length === 0 && !isPinching) {
         if (currentScale > 1) {
           currentScale = 1;
           baseScale = 1;
@@ -539,9 +545,7 @@
           currentScale = 2.5;
           baseScale = 2.5;
         }
-        imgEl.style.transition = 'transform 0.25s ease';
-        updateImageTransform();
-        setTimeout(function() { imgEl.style.transition = 'transform 0.05s ease-out'; }, 260);
+        updateImageTransform(true);
       }
       lastTap = currentTime;
     });
@@ -549,13 +553,14 @@
     // เริ่มต้นสัมผัส
     containerEl.addEventListener('touchstart', function(e) {
       if (e.touches.length === 2) {
+        isPinching = true;
+        isDragging = false;
         initialDist = Math.hypot(
           e.touches[0].pageX - e.touches[1].pageX,
           e.touches[0].pageY - e.touches[1].pageY
         );
         baseScale = currentScale;
-        isDragging = false;
-      } else if (e.touches.length === 1 && currentScale > 1) {
+      } else if (e.touches.length === 1 && currentScale > 1 && !isPinching) {
         isDragging = true;
         startX = e.touches[0].pageX;
         startY = e.touches[0].pageY;
@@ -574,37 +579,42 @@
         );
         if (initialDist > 0) {
           var factor = currentDist / initialDist;
-          currentScale = Math.min(Math.max(baseScale * factor, 1), 4);
-          if (currentScale === 1) {
-            posX = 0;
-            posY = 0;
-          }
-          updateImageTransform();
+          currentScale = Math.min(Math.max(baseScale * factor, 1), 4.5);
+          updateImageTransform(false);
         }
-      } else if (e.touches.length === 1 && isDragging && currentScale > 1) {
+      } else if (e.touches.length === 1 && isDragging && !isPinching && currentScale > 1) {
         e.preventDefault();
         posX = initialPosX + (e.touches[0].pageX - startX);
         posY = initialPosY + (e.touches[0].pageY - startY);
-        updateImageTransform();
+        updateImageTransform(false);
       }
     }, { passive: false });
 
-    // เมื่อปล่อยนิ้ว (คงค่าสเกลไว้ ไม่เด้งกลับ)
+    // เมื่อปล่อยนิ้ว
     containerEl.addEventListener('touchend', function(e) {
-      if (e.touches.length < 2) {
-        initialDist = 0;
+      if (isPinching) {
+        if (e.touches.length === 0) {
+          isPinching = false;
+          baseScale = currentScale;
+          initialDist = 0;
+          if (currentScale <= 1) {
+            currentScale = 1;
+            baseScale = 1;
+            posX = 0;
+            posY = 0;
+            updateImageTransform(true);
+          }
+        }
+      } else if (e.touches.length === 0) {
+        isDragging = false;
         baseScale = currentScale;
       }
-      if (e.touches.length === 0) {
-        isDragging = false;
-        if (currentScale < 1) {
-          currentScale = 1;
-          baseScale = 1;
-          posX = 0;
-          posY = 0;
-          updateImageTransform();
-        }
-      }
+    });
+
+    containerEl.addEventListener('touchcancel', function() {
+      isPinching = false;
+      isDragging = false;
+      baseScale = currentScale;
     });
 
     // ==========================================
