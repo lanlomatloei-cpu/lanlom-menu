@@ -409,12 +409,17 @@
     var psid = new URLSearchParams(window.location.search).get('psid') || '';
 
     window.onload = function() {
-      var today = new Date().toISOString().split('T')[0];
-      document.getElementById('bookDate').value = today;
-      document.getElementById('checkDate').value = today;
-      document.getElementById('foodDate').value = today;
-      document.getElementById('cancelDate').value = today;
-    };
+  var now = new Date();
+  var year = now.getFullYear();
+  var month = String(now.getMonth() + 1).padStart(2, '0');
+  var day = String(now.getDate()).padStart(2, '0');
+  var today = year + '-' + month + '-' + day;
+
+  document.getElementById('bookDate').value = today;
+  document.getElementById('checkDate').value = today;
+  document.getElementById('foodDate').value = today;
+  document.getElementById('cancelDate').value = today;
+};
 
     function openModal(id) {
       document.getElementById(id).classList.add('active');
