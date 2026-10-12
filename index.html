@@ -70,7 +70,7 @@
     .menu-card .icon { font-size: 24px; margin-bottom: 6px; }
     .footer { text-align: center; margin-top: 26px; font-size: 12px; color: #8c9ba5; }
 
-    /* Modal Overlay สำหรับฟอร์ม */
+    /* Modal Overlay สำหรับฟอร์ม (ปรับให้เนื้อหาจัดเรียงและดันปุ่มไปขวาได้) */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -81,14 +81,18 @@
       overflow-y: auto;
       padding: 16px 12px 30px;
     }
-    .modal-overlay.active { display: block; }
+    .modal-overlay.active { 
+      display: flex;
+      flex-direction: column;
+    }
     
-    /* ปุ่มย้อนกลับสี #c03ca8 */
+    /* ปุ่มย้อนกลับสี #c03ca8 สำหรับหน้าฟอร์ม (ย้ายไปชิดขวาบน) */
     .btn-back-modal {
       display: inline-flex;
       align-items: center;
       gap: 8px;
       margin-bottom: 16px;
+      margin-left: auto; /* ดันปุ่มไปชิดขวาสุด */
       color: #000000;
       font-size: 14.5px;
       font-weight: 700;
@@ -110,6 +114,7 @@
       padding: 22px 18px;
       border-radius: 16px;
       box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      width: 100%;
       max-width: 480px;
       margin: 0 auto;
     }
@@ -320,7 +325,7 @@
 
   <!-- 1. Modal ฟอร์มจองโต๊ะ -->
   <div id="modalBooking" class="modal-overlay">
-    <button class="btn-back-modal" onclick="closeModal('modalBooking')">‹ ย้อนกลับไปเมนูหลัก</button>
+    <button class="btn-back-modal" onclick="closeModal('modalBooking')">✕ ย้อนกลับไปเมนูหลัก</button>
     <div class="form-card">
       <h3>📝 จองโต๊ะ / ห้อง VIP</h3>
       <div class="subtitle">กรอกรายละเอียดเพื่อทำการจอง</div>
@@ -375,7 +380,7 @@
 
   <!-- 2. Modal เช็กห้อง VIP -->
   <div id="modalRoom" class="modal-overlay">
-    <button class="btn-back-modal" onclick="closeModal('modalRoom')">‹ ย้อนกลับไปเมนูหลัก</button>
+    <button class="btn-back-modal" onclick="closeModal('modalRoom')">✕ ย้อนกลับไปเมนูหลัก</button>
     <div class="form-card">
       <h3>🎤 ห้อง VIP ลานลม ชมเลย</h3>
       <div class="subtitle">เลือกวันเพื่อตรวจสอบสถานะห้องว่าง (V1 - V5)</div>
@@ -395,7 +400,7 @@
 
   <!-- 3. Modal สั่งอาหารล่วงหน้า -->
   <div id="modalFood" class="modal-overlay">
-    <button class="btn-back-modal" onclick="closeModal('modalFood')">‹ ย้อนกลับไปเมนูหลัก</button>
+    <button class="btn-back-modal" onclick="closeModal('modalFood')">✕ ย้อนกลับไปเมนูหลัก</button>
     <div class="form-card">
       <h3>🍲 สั่งอาหารล่วงหน้า</h3>
       <div class="subtitle">ระบุรายละเอียดการสั่งอาหาร</div>
@@ -424,7 +429,7 @@
 
   <!-- 4. Modal ยกเลิกการจอง -->
   <div id="modalCancel" class="modal-overlay">
-    <button class="btn-back-modal" onclick="closeModal('modalCancel')">‹ ย้อนกลับไปเมนูหลัก</button>
+    <button class="btn-back-modal" onclick="closeModal('modalCancel')">✕ ย้อนกลับไปเมนูหลัก</button>
     <div class="form-card">
       <h3>🗑️ ยกเลิกการจอง</h3>
       <div class="subtitle">ระบุข้อมูลที่ตรงกับตอนจอง</div>
