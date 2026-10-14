@@ -387,10 +387,12 @@
       
       <div class="form-group">
         <label>📅 เลือกวันเดือนปีที่ต้องการตรวจสอบ</label>
-        <input type="date" id="checkDate">
+        <!-- เพิ่ม onchange="checkRooms()" เพื่อให้ตรวจสอบอัตโนมัติทันทีที่เปลี่ยนวันที่ -->
+        <input type="date" id="checkDate" onchange="checkRooms()">
       </div>
 
-      <button type="button" class="btn-submit" onclick="checkRooms()">ตรวจสอบห้องว่าง</button>
+      <!-- ซ่อนปุ่มเดิมไว้ เพราะระบบตรวจเช็กให้อัตโนมัติทันที -->
+      <button type="button" class="btn-submit" onclick="checkRooms()" style="display: none;">ตรวจสอบห้องว่าง</button>
 
       <div id="roomDateHeader" class="date-status-badge"></div>
       
@@ -649,6 +651,8 @@
     // ==========================================
     function checkRooms() {
       var dateVal = document.getElementById('checkDate').value;
+      if (!dateVal) return;
+
       var dateHeader = document.getElementById('roomDateHeader');
       var listContainer = document.getElementById('roomResultList');
       
