@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>ลานลม ชมเลย</title>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- โหลดไลบรารี Flatpickr สำหรับทำปฏิทินภาษาไทย -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/th.js"></script>
   <style>
     * {
       box-sizing: border-box;
@@ -70,7 +74,6 @@
     .menu-card .icon { font-size: 24px; margin-bottom: 6px; }
     .footer { text-align: center; margin-top: 26px; font-size: 12px; color: #8c9ba5; }
 
-    /* Modal Overlay สำหรับฟอร์ม (ปรับให้เนื้อหาจัดเรียงและดันปุ่มไปขวาได้) */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -86,13 +89,12 @@
       flex-direction: column;
     }
     
-    /* ปุ่มย้อนกลับสี #c03ca8 สำหรับหน้าฟอร์ม (ย้ายไปชิดขวาบน) */
     .btn-back-modal {
       display: inline-flex;
       align-items: center;
       gap: 8px;
       margin-bottom: 16px;
-      margin-left: auto; /* ดันปุ่มไปชิดขวาสุด */
+      margin-left: auto;
       color: #000000;
       font-size: 14.5px;
       font-weight: 700;
@@ -149,7 +151,6 @@
     .btn-submit:disabled { background-color: #95a5a6; }
     .status-msg { margin-top: 14px; text-align: center; font-size: 14px; font-weight: 500; }
 
-    /* Room Status Cards */
     .date-status-badge {
       text-align: center;
       font-size: 12.5px;
@@ -182,9 +183,7 @@
       gap: 8px;
       font-weight: 500;
     }
-    .room-title-area .dot {
-      font-size: 11px;
-    }
+    .room-title-area .dot { font-size: 11px; }
     .btn-action-book {
       background-color: #1b4d3e;
       color: #ffffff;
@@ -202,7 +201,6 @@
       padding-right: 4px;
     }
 
-    /* Image Viewer Modal */
     .image-viewer {
       display: none;
       position: fixed;
@@ -215,7 +213,6 @@
     }
     .image-viewer.active { display: block; }
 
-    /* ปุ่มย้อนกลับมุมขวาบน ตรึงนิ่ง ไม่ขยายตาม */
     .btn-back-image {
       position: fixed !important;
       top: 16px !important;
@@ -332,7 +329,7 @@
       <form onsubmit="submitBooking(event)">
         <div class="form-group">
           <label>📅 วันที่ต้องการจอง</label>
-          <input type="date" id="bookDate" required>
+          <input type="text" id="bookDate" required>
         </div>
         <div class="form-group">
           <label>🥂 โต๊ะ / ห้องที่ต้องการ</label>
@@ -387,15 +384,10 @@
       
       <div class="form-group">
         <label>📅 เลือกวันเดือนปีที่ต้องการตรวจสอบ</label>
-        <!-- เพิ่ม onchange="checkRooms()" เพื่อให้ตรวจสอบอัตโนมัติทันทีที่เปลี่ยนวันที่ -->
-        <input type="date" id="checkDate" onchange="checkRooms()">
+        <input type="text" id="checkDate">
       </div>
 
-      <!-- ซ่อนปุ่มเดิมไว้ เพราะระบบตรวจเช็กให้อัตโนมัติทันที -->
-      <button type="button" class="btn-submit" onclick="checkRooms()" style="display: none;">ตรวจสอบห้องว่าง</button>
-
       <div id="roomDateHeader" class="date-status-badge"></div>
-      
       <div id="roomResultList"></div>
     </div>
   </div>
@@ -409,7 +401,7 @@
       <form onsubmit="submitFood(event)">
         <div class="form-group">
           <label>📅 วันที่จองไว้</label>
-          <input type="date" id="foodDate" required>
+          <input type="text" id="foodDate" required>
         </div>
         <div class="form-group">
           <label>🪑 โต๊ะ / ห้องที่จองไว้</label>
@@ -438,7 +430,7 @@
       <form onsubmit="submitCancel(event)">
         <div class="form-group">
           <label>📅 วันที่ทำการจอง</label>
-          <input type="date" id="cancelDate" required>
+          <input type="text" id="cancelDate" required>
         </div>
         <div class="form-group">
           <label>🪑 โต๊ะ / ห้องที่จองไว้</label>
@@ -454,7 +446,7 @@
     </div>
   </div>
 
-  <!-- Image Viewer Modal พร้อมปุ่มย้อนกลับมุมขวาบน -->
+  <!-- Image Viewer Modal -->
   <div id="imageViewer" class="image-viewer">
     <button type="button" class="btn-back-image" onclick="closeImageViewer()">✕ ย้อนกลับไปเมนูหลัก</button>
     <div class="image-container" id="imgContainer">
@@ -466,19 +458,27 @@
     var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwaqvpVM5EB3VYZtj88IMpMxcvNvfbDIFSyfIYzwfz0lxJlS2qG5xPjo6sYMDO3d3Ow/exec";
     var psid = new URLSearchParams(window.location.search).get('psid') || '';
 
-    // กำหนดวันที่เริ่มต้นตามเวลาประเทศไทย
-    window.onload = function() {
-      var now = new Date();
-      var year = now.getFullYear();
-      var month = String(now.getMonth() + 1).padStart(2, '0');
-      var day = String(now.getDate()).padStart(2, '0');
-      var today = year + '-' + month + '-' + day;
+    // ตั้งค่า Flatpickr ให้แสดงผลเป็นภาษาไทยและรูปแบบ วัน เดือน(ชื่อไทย) ปี
+    document.addEventListener("DOMContentLoaded", function() {
+      var fpConfig = {
+        locale: "th",
+        dateFormat: "Y-m-d", // ส่งค่าเบื้องหลังเป็น ค.ศ. (YYYY-MM-DD) ไปให้ Apps Script ตามเดิม
+        altInput: true,
+        altFormat: "j F Y", // แสดงผลให้ผู้ใช้เห็นเป็น เช่น "29 ตุลาคม 2026"
+        defaultDate: "today"
+      };
 
-      document.getElementById('bookDate').value = today;
-      document.getElementById('checkDate').value = today;
-      document.getElementById('foodDate').value = today;
-      document.getElementById('cancelDate').value = today;
-    };
+      flatpickr("#bookDate", fpConfig);
+      
+      var checkDateFP = flatpickr("#checkDate", Object.assign({}, fpConfig, {
+        onChange: function(selectedDates, dateStr, instance) {
+          checkRooms();
+        }
+      }));
+
+      flatpickr("#foodDate", fpConfig);
+      flatpickr("#cancelDate", fpConfig);
+    });
 
     function openModal(id) {
       document.getElementById(id).classList.add('active');
@@ -490,21 +490,10 @@
       document.getElementById(id).classList.remove('active'); 
     }
 
-    // ==========================================
-    // ระบบเปิด/ปิดดูรูปภาพ และการซูมเฉพาะตัวภาพ (ล็อกสเกล 100% ไม่ดีดกลับ)
-    // ==========================================
     var currentScale = 1;
-    var posX = 0;
-    var posY = 0;
-    var initialDist = 0;
-    var baseScale = 1;
-    var startX = 0;
-    var startY = 0;
-    var initialPosX = 0;
-    var initialPosY = 0;
-    var isDragging = false;
-    var isPinching = false;
-    var lastTap = 0;
+    var posX = 0, posY = 0, initialDist = 0, baseScale = 1;
+    var startX = 0, startY = 0, initialPosX = 0, initialPosY = 0;
+    var isDragging = false, isPinching = false, lastTap = 0;
 
     var imgEl = document.getElementById('viewerImage');
     var containerEl = document.getElementById('imgContainer');
@@ -519,10 +508,7 @@
     }
 
     function openImageViewer(url) {
-      currentScale = 1;
-      baseScale = 1;
-      posX = 0;
-      posY = 0;
+      currentScale = 1; baseScale = 1; posX = 0; posY = 0;
       updateImageTransform(false);
       imgEl.src = url;
       document.getElementById('imageViewer').classList.add('active');
@@ -532,59 +518,40 @@
     function closeImageViewer() {
       document.getElementById('imageViewer').classList.remove('active');
       document.body.style.overflow = 'auto';
-      currentScale = 1;
-      baseScale = 1;
-      posX = 0;
-      posY = 0;
+      currentScale = 1; baseScale = 1; posX = 0; posY = 0;
       updateImageTransform(false);
     }
 
-    // แตะ 2 ครั้งเพื่อซูมเข้า/ออก (Double Tap)
     containerEl.addEventListener('touchend', function(e) {
       var currentTime = new Date().getTime();
       var tapLength = currentTime - lastTap;
       if (tapLength < 300 && tapLength > 0 && e.touches.length === 0 && !isPinching) {
         if (currentScale > 1) {
-          currentScale = 1;
-          baseScale = 1;
-          posX = 0;
-          posY = 0;
+          currentScale = 1; baseScale = 1; posX = 0; posY = 0;
         } else {
-          currentScale = 2.5;
-          baseScale = 2.5;
+          currentScale = 2.5; baseScale = 2.5;
         }
         updateImageTransform(true);
       }
       lastTap = currentTime;
     });
 
-    // เริ่มต้นสัมผัส
     containerEl.addEventListener('touchstart', function(e) {
       if (e.touches.length === 2) {
-        isPinching = true;
-        isDragging = false;
-        initialDist = Math.hypot(
-          e.touches[0].pageX - e.touches[1].pageX,
-          e.touches[0].pageY - e.touches[1].pageY
-        );
+        isPinching = true; isDragging = false;
+        initialDist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY);
         baseScale = currentScale;
       } else if (e.touches.length === 1 && currentScale > 1 && !isPinching) {
         isDragging = true;
-        startX = e.touches[0].pageX;
-        startY = e.touches[0].pageY;
-        initialPosX = posX;
-        initialPosY = posY;
+        startX = e.touches[0].pageX; startY = e.touches[0].pageY;
+        initialPosX = posX; initialPosY = posY;
       }
     }, { passive: false });
 
-    // ขณะขยับนิ้ว
     containerEl.addEventListener('touchmove', function(e) {
       if (e.touches.length === 2) {
         e.preventDefault();
-        var currentDist = Math.hypot(
-          e.touches[0].pageX - e.touches[1].pageX,
-          e.touches[0].pageY - e.touches[1].pageY
-        );
+        var currentDist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY);
         if (initialDist > 0) {
           var factor = currentDist / initialDist;
           currentScale = Math.min(Math.max(baseScale * factor, 1), 4.5);
@@ -598,57 +565,15 @@
       }
     }, { passive: false });
 
-    // เมื่อปล่อยนิ้ว
     containerEl.addEventListener('touchend', function(e) {
       if (isPinching) {
         if (e.touches.length === 0) {
-          isPinching = false;
-          baseScale = currentScale;
-          initialDist = 0;
-          if (currentScale <= 1) {
-            currentScale = 1;
-            baseScale = 1;
-            posX = 0;
-            posY = 0;
-            updateImageTransform(true);
-          }
+          isPinching = false; baseScale = currentScale; initialDist = 0;
+          if (currentScale <= 1) { currentScale = 1; baseScale = 1; posX = 0; posY = 0; updateImageTransform(true); }
         }
-      } else if (e.touches.length === 0) {
-        isDragging = false;
-        baseScale = currentScale;
-      }
+      } else if (e.touches.length === 0) { isDragging = false; baseScale = currentScale; }
     });
 
-    containerEl.addEventListener('touchcancel', function() {
-      isPinching = false;
-      isDragging = false;
-      baseScale = currentScale;
-    });
-
-    // ==========================================
-    // บล็อกคำสั่งซูมหน้าเว็บ Safari / iOS / Webview
-    // ==========================================
-    document.addEventListener('gesturestart', function(e) {
-      e.preventDefault();
-    }, { passive: false });
-
-    document.addEventListener('gesturechange', function(e) {
-      e.preventDefault();
-    }, { passive: false });
-
-    document.addEventListener('gestureend', function(e) {
-      e.preventDefault();
-    }, { passive: false });
-
-    window.addEventListener('touchmove', function(e) {
-      if (e.touches.length > 1) {
-        e.preventDefault();
-      }
-    }, { passive: false });
-
-    // ==========================================
-    // ตรวจสอบห้องว่าง VIP
-    // ==========================================
     function checkRooms() {
       var dateVal = document.getElementById('checkDate').value;
       if (!dateVal) return;
@@ -674,18 +599,12 @@
             var isAvailable = res.available.indexOf(room) !== -1;
             if (isAvailable) {
               html += '<div class="room-row available">' +
-                        '<div class="room-title-area">' +
-                          '<span class="dot">🟢</span>' +
-                          '<span>ห้อง ' + room + ' : ว่าง</span>' +
-                        '</div>' +
+                        '<div class="room-title-area"><span class="dot">🟢</span><span>ห้อง ' + room + ' : ว่าง</span></div>' +
                         '<button type="button" class="btn-action-book" onclick="bookThisRoom(\'' + room + '\', \'' + dateVal + '\')">จองห้องนี้</button>' +
                       '</div>';
             } else {
               html += '<div class="room-row booked">' +
-                        '<div class="room-title-area">' +
-                          '<span class="dot">🔴</span>' +
-                          '<span>ห้อง ' + room + ' : จองแล้ว</span>' +
-                        '</div>' +
+                        '<div class="room-title-area"><span class="dot">🔴</span><span>ห้อง ' + room + ' : จองแล้ว</span></div>' +
                         '<span class="text-action-booked">ไม่ว่าง</span>' +
                       '</div>';
             }
@@ -704,12 +623,10 @@
     function bookThisRoom(roomName, dateVal) {
       closeModal('modalRoom');
       document.getElementById('bookDate').value = dateVal;
-      document.getElementById('bookTable').value = roomName;
       openModal('modalBooking');
       document.getElementById('modalBooking').scrollTop = 0;
     }
 
-    // ฟังก์ชันส่งฟอร์มจอง
     function submitBooking(e) {
       e.preventDefault();
       var btn = document.getElementById('btnBookSubmit');
@@ -739,7 +656,6 @@
       });
     }
 
-    // ฟังก์ชันส่งสั่งอาหารล่วงหน้า
     function submitFood(e) {
       e.preventDefault();
       var btn = document.getElementById('btnFoodSubmit');
@@ -767,7 +683,6 @@
       });
     }
 
-    // ฟังก์ชันยกเลิกการจอง
     function submitCancel(e) {
       e.preventDefault();
       var btn = document.getElementById('btnCancelSubmit');
