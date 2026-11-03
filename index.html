@@ -5,49 +5,265 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>ลานลม ชมเลย</title>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <!-- โหลด Flatpickr สำหรับปฏิทินภาษาไทย -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/th.js"></script>
   <style>
-    * { box-sizing: border-box; font-family: 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    body { background: #f7f9fa; color: #333333; padding: 16px 14px 28px; }
-    .header { text-align: center; padding: 14px 10px 18px; background: #ffffff; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 18px; }
+    * {
+      box-sizing: border-box;
+      font-family: 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      background: #f7f9fa;
+      color: #333333;
+      padding: 16px 14px 28px;
+    }
+    .header {
+      text-align: center;
+      padding: 14px 10px 18px;
+      background: #ffffff;
+      border-radius: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      margin-bottom: 18px;
+    }
     .header h2 { color: #1b4d3e; font-size: 20px; margin-bottom: 4px; }
     .header p { color: #666666; font-size: 13px; }
-    .section-title { font-size: 14px; font-weight: 600; color: #27493a; margin: 16px 0 10px 4px; display: flex; align-items: center; gap: 6px; }
-    .section-title::before { content: ""; display: inline-block; width: 4px; height: 14px; background: #2e7d32; border-radius: 2px; }
-    .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .menu-card { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 14px 8px; background: #ffffff; border-radius: 12px; color: #2c3e50; font-size: 13px; font-weight: 500; border: 1px solid #edf0f2; box-shadow: 0 2px 6px rgba(0,0,0,0.03); cursor: pointer; text-align: center; }
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #27493a;
+      margin: 16px 0 10px 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .section-title::before {
+      content: "";
+      display: inline-block;
+      width: 4px;
+      height: 14px;
+      background: #2e7d32;
+      border-radius: 2px;
+    }
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    .menu-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 8px;
+      background: #ffffff;
+      border-radius: 12px;
+      color: #2c3e50;
+      font-size: 13px;
+      font-weight: 500;
+      border: 1px solid #edf0f2;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+      cursor: pointer;
+      text-align: center;
+    }
     .menu-card:active { transform: scale(0.97); background: #eef7f0; }
     .menu-card .icon { font-size: 24px; margin-bottom: 6px; }
     .footer { text-align: center; margin-top: 26px; font-size: 12px; color: #8c9ba5; }
-    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f7f9fa; z-index: 9999; overflow-y: auto; padding: 16px 12px 30px; }
-    .modal-overlay.active { display: flex; flex-direction: column; }
-    .btn-back-modal { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 16px; margin-left: auto; color: #000000; font-size: 14.5px; font-weight: 700; padding: 9px 18px; background-color: #c03ca8; border-radius: 25px; border: none; box-shadow: 0 4px 12px rgba(192, 60, 168, 0.35); cursor: pointer; }
-    .form-card { background: #ffffff; padding: 22px 18px; border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.06); width: 100%; max-width: 480px; margin: 0 auto; }
+
+    /* Modal Overlay สำหรับฟอร์ม (ปรับให้เนื้อหาจัดเรียงและดันปุ่มไปขวาได้) */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #f7f9fa;
+      z-index: 9999;
+      overflow-y: auto;
+      padding: 16px 12px 30px;
+    }
+    .modal-overlay.active { 
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* ปุ่มย้อนกลับสี #c03ca8 สำหรับหน้าฟอร์ม (ย้ายไปชิดขวาบน) */
+    .btn-back-modal {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      margin-left: auto; /* ดันปุ่มไปชิดขวาสุด */
+      color: #000000;
+      font-size: 14.5px;
+      font-weight: 700;
+      padding: 9px 18px;
+      background-color: #c03ca8;
+      border-radius: 25px;
+      border: none;
+      box-shadow: 0 4px 12px rgba(192, 60, 168, 0.35);
+      cursor: pointer;
+      transition: transform 0.1s ease;
+    }
+    .btn-back-modal:active {
+      transform: scale(0.96);
+      background-color: #a0288b;
+    }
+
+    .form-card {
+      background: #ffffff;
+      padding: 22px 18px;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+    }
     .form-card h3 { color: #1b4d3e; margin-bottom: 6px; text-align: center; font-size: 18px; }
     .form-card .subtitle { color: #666; font-size: 12px; text-align: center; margin-bottom: 16px; }
     .form-group { margin-bottom: 14px; }
     label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 13.5px; color: #2c3e50; }
-    input, select, textarea { width: 100%; padding: 11px 12px; font-size: 15px; border: 1.5px solid #dcdfe6; border-radius: 8px; background-color: #fff; outline: none; }
+    input, select, textarea {
+      width: 100%;
+      padding: 11px 12px;
+      font-size: 15px;
+      border: 1.5px solid #dcdfe6;
+      border-radius: 8px;
+      background-color: #fff;
+      outline: none;
+    }
     input:focus, select:focus, textarea:focus { border-color: #1b4d3e; }
     .row { display: flex; gap: 10px; }
     .row .form-group { flex: 1; }
-    .btn-submit { width: 100%; background-color: #1b4d3e; color: #ffffff; border: none; padding: 12px; font-size: 15px; font-weight: 500; border-radius: 8px; cursor: pointer; margin-top: 6px; }
+    .btn-submit {
+      width: 100%;
+      background-color: #1b4d3e;
+      color: #ffffff;
+      border: none;
+      padding: 12px;
+      font-size: 15px;
+      font-weight: 500;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 6px;
+    }
     .btn-submit:disabled { background-color: #95a5a6; }
-    .status-msg { margin-top: 14px; text-align: left; font-size: 13.5px; font-weight: 500; white-space: pre-line; background: #e8f5e9; padding: 10px; border-radius: 8px; color: #1b5e20; display: none; }
-    .date-status-badge { text-align: center; font-size: 12.5px; color: #2c3e50; font-weight: 500; margin: 14px 0 12px; }
-    .room-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 12px; margin-bottom: 8px; border-radius: 6px; font-size: 13.5px; }
-    .room-row.available { background-color: #e8f5e9; border: 1px solid #c8e6c9; color: #1b5e20; }
-    .room-row.booked { background-color: #ffebee; border: 1px solid #ffcdd2; color: #b71c1c; }
-    .room-title-area { display: flex; align-items: center; gap: 8px; font-weight: 500; }
-    .btn-action-book { background-color: #1b4d3e; color: #ffffff; border: none; padding: 5px 12px; border-radius: 4px; font-size: 12.5px; cursor: pointer; }
-    .image-viewer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); z-index: 10000; overflow: hidden; }
+    .status-msg { margin-top: 14px; text-align: center; font-size: 14px; font-weight: 500; }
+
+    /* Room Status Cards */
+    .date-status-badge {
+      text-align: center;
+      font-size: 12.5px;
+      color: #2c3e50;
+      font-weight: 500;
+      margin: 14px 0 12px;
+    }
+    .room-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 12px;
+      margin-bottom: 8px;
+      border-radius: 6px;
+      font-size: 13.5px;
+    }
+    .room-row.available {
+      background-color: #e8f5e9;
+      border: 1px solid #c8e6c9;
+      color: #1b5e20;
+    }
+    .room-row.booked {
+      background-color: #ffebee;
+      border: 1px solid #ffcdd2;
+      color: #b71c1c;
+    }
+    .room-title-area {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+    }
+    .room-title-area .dot {
+      font-size: 11px;
+    }
+    .btn-action-book {
+      background-color: #1b4d3e;
+      color: #ffffff;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 4px;
+      font-size: 12.5px;
+      font-weight: 400;
+      cursor: pointer;
+    }
+    .text-action-booked {
+      color: #757575;
+      font-size: 12.5px;
+      font-weight: 400;
+      padding-right: 4px;
+    }
+
+    /* Image Viewer Modal */
+    .image-viewer {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 10000;
+      overflow: hidden;
+      touch-action: none;
+    }
     .image-viewer.active { display: block; }
-    .btn-back-image { position: fixed !important; top: 16px !important; right: 16px !important; z-index: 999999 !important; display: inline-flex; align-items: center; gap: 8px; color: #000; font-size: 14.5px; font-weight: 700; padding: 9px 18px; background-color: #c03ca8; border-radius: 25px; border: none; cursor: pointer; }
-    .image-container { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
-    #viewerImage { max-width: 95%; max-height: 85vh; object-fit: contain; border-radius: 8px; }
+
+    /* ปุ่มย้อนกลับมุมขวาบน ตรึงนิ่ง ไม่ขยายตาม */
+    .btn-back-image {
+      position: fixed !important;
+      top: 16px !important;
+      right: 16px !important;
+      left: auto !important;
+      z-index: 999999 !important;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #000000;
+      font-size: 14.5px;
+      font-weight: 700;
+      padding: 9px 18px;
+      background-color: #c03ca8;
+      border-radius: 25px;
+      border: none;
+      box-shadow: 0 4px 12px rgba(192, 60, 168, 0.5);
+      cursor: pointer;
+      user-select: none;
+      pointer-events: auto;
+      transform: none !important;
+    }
+    .btn-back-image:active {
+      transform: scale(0.96) !important;
+      background-color: #a0288b;
+    }
+
+    .image-container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      touch-action: none;
+      cursor: grab;
+    }
+
+    #viewerImage {
+      max-width: 95%;
+      max-height: 85vh;
+      object-fit: contain;
+      transform-origin: center center;
+      user-select: none;
+      -webkit-user-drag: none;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+      border-radius: 8px;
+      will-change: transform;
+    }
   </style>
 </head>
 <body>
@@ -59,10 +275,50 @@
 
   <div class="section-title">บริการและการจอง</div>
   <div class="menu-grid">
-    <div onclick="openModal('modalBooking')" class="menu-card"><span class="icon">📝</span>จองโต๊ะ / ห้อง VIP</div>
-    <div onclick="openModal('modalRoom')" class="menu-card"><span class="icon">🔍</span>เช็กห้องว่าง VIP</div>
-    <div onclick="openModal('modalFood')" class="menu-card"><span class="icon">🍲</span>สั่งอาหารล่วงหน้า</div>
-    <div onclick="openModal('modalCancel')" class="menu-card"><span class="icon">🗑️</span>ยกเลิกการจอง</div>
+    <div onclick="openModal('modalBooking')" class="menu-card">
+      <span class="icon">📝</span>จองโต๊ะ / ห้อง VIP
+    </div>
+    <div onclick="openModal('modalRoom')" class="menu-card">
+      <span class="icon">🔍</span>เช็กห้องว่าง VIP
+    </div>
+    <div onclick="openModal('modalFood')" class="menu-card">
+      <span class="icon">🍲</span>สั่งอาหารล่วงหน้า
+    </div>
+    <div onclick="openModal('modalCancel')" class="menu-card">
+      <span class="icon">🗑️</span>ยกเลิกการจอง
+    </div>
+  </div>
+
+  <div class="section-title">โปรโมชันพิเศษ</div>
+  <div class="menu-grid">
+    <div onclick="openImageViewer('https://lh3.googleusercontent.com/d/1EgK_3HTrl4lOFz_Iy40DzC_2RiFC2yZt')" class="menu-card">
+      <span class="icon">🍺</span>โปรเบียร์
+    </div>
+    <div onclick="openImageViewer('https://lh3.googleusercontent.com/d/1XMGM3aOZACc3hRuX2IKWtyxlyE-nJUZ0')" class="menu-card">
+      <span class="icon">🥃</span>โปรเหล้า
+    </div>
+    <div onclick="openImageViewer('https://lh3.googleusercontent.com/d/1-Mm-eoiWfXSYNlLYp-89Luknlgy4wGp9')" class="menu-card">
+      <span class="icon">🎂</span>โปรวันเกิด
+    </div>
+    <div onclick="openImageViewer('https://lh3.googleusercontent.com/d/1fALbdB7cNspp8dhFvXMDTt-pYdGVWNHL')" class="menu-card">
+      <span class="icon">🎤</span>โปรห้อง VIP
+    </div>
+  </div>
+
+  <div class="section-title">รายการเมนูและแผนที่</div>
+  <div class="menu-grid">
+    <div onclick="openImageViewer('https://lh3.googleusercontent.com/d/1bFBHNZVUjAFOBANF_WvKorIY8FMTfBq1')" class="menu-card">
+      <span class="icon">📖</span>เมนูอาหาร 1
+    </div>
+    <div onclick="openImageViewer('https://lh3.googleusercontent.com/d/18uie-OxWu8KJe6w586-cZn43b1dht8XL')" class="menu-card">
+      <span class="icon">🍽️</span>เมนูอาหาร 2
+    </div>
+    <div onclick="openImageViewer('https://lh3.googleusercontent.com/d/1bwFeqfJDy4qwkEaVzcJ6sM9NusO1aXtz')" class="menu-card">
+      <span class="icon">🍷</span>เมนูเครื่องดื่ม
+    </div>
+    <div onclick="openImageViewer('https://lh3.googleusercontent.com/d/1nLFefFZ8KdbaK0KOTJHXG9zlKQogQjZr')" class="menu-card">
+      <span class="icon">📍</span>พิกัดร้าน
+    </div>
   </div>
 
   <div class="footer">ร้านเปิดให้บริการทุกวัน 17:00 - 24:00 น.</div>
@@ -76,7 +332,7 @@
       <form onsubmit="submitBooking(event)">
         <div class="form-group">
           <label>📅 วันที่ต้องการจอง</label>
-          <input type="text" id="bookDate" required>
+          <input type="date" id="bookDate" required>
         </div>
         <div class="form-group">
           <label>🥂 โต๊ะ / ห้องที่ต้องการ</label>
@@ -122,26 +378,343 @@
     </div>
   </div>
 
+  <!-- 2. Modal เช็กห้อง VIP -->
+  <div id="modalRoom" class="modal-overlay">
+    <button class="btn-back-modal" onclick="closeModal('modalRoom')">✕ ย้อนกลับไปเมนูหลัก</button>
+    <div class="form-card">
+      <h3>🎤 ห้อง VIP ลานลม ชมเลย</h3>
+      <div class="subtitle">เลือกวันเพื่อตรวจสอบสถานะห้องว่าง (V1 - V5)</div>
+      
+      <div class="form-group">
+        <label>📅 เลือกวันเดือนปีที่ต้องการตรวจสอบ</label>
+        <!-- เพิ่ม onchange="checkRooms()" เพื่อให้ตรวจสอบอัตโนมัติทันทีที่เปลี่ยนวันที่ -->
+        <input type="date" id="checkDate" onchange="checkRooms()">
+      </div>
+
+      <!-- ซ่อนปุ่มเดิมไว้ เพราะระบบตรวจเช็กให้อัตโนมัติทันที -->
+      <button type="button" class="btn-submit" onclick="checkRooms()" style="display: none;">ตรวจสอบห้องว่าง</button>
+
+      <div id="roomDateHeader" class="date-status-badge"></div>
+      
+      <div id="roomResultList"></div>
+    </div>
+  </div>
+
+  <!-- 3. Modal สั่งอาหารล่วงหน้า -->
+  <div id="modalFood" class="modal-overlay">
+    <button class="btn-back-modal" onclick="closeModal('modalFood')">✕ ย้อนกลับไปเมนูหลัก</button>
+    <div class="form-card">
+      <h3>🍲 สั่งอาหารล่วงหน้า</h3>
+      <div class="subtitle">ระบุรายละเอียดการสั่งอาหาร</div>
+      <form onsubmit="submitFood(event)">
+        <div class="form-group">
+          <label>📅 วันที่จองไว้</label>
+          <input type="date" id="foodDate" required>
+        </div>
+        <div class="form-group">
+          <label>🪑 โต๊ะ / ห้องที่จองไว้</label>
+          <input type="text" id="foodTable" placeholder="เช่น V1 หรือ โต๊ะ 5" required>
+        </div>
+        <div class="form-group">
+          <label>👤 ชื่อผู้จอง (ตรงกับที่ระบุตอนจอง)</label>
+          <input type="text" id="foodName" required>
+        </div>
+        <div class="form-group">
+          <label>📝 รายการอาหารและจำนวน (บรรทัดละ 1 เมนู)</label>
+          <textarea id="foodList" rows="5" placeholder="เช่น&#10;ต้มยำกุ้ง 1 ชาม&#10;ข้าวผัดปูจานใหญ่ 1" required></textarea>
+        </div>
+        <button type="submit" id="btnFoodSubmit" class="btn-submit">บันทึกรายการอาหาร</button>
+        <div id="foodStatus" class="status-msg"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. Modal ยกเลิกการจอง -->
+  <div id="modalCancel" class="modal-overlay">
+    <button class="btn-back-modal" onclick="closeModal('modalCancel')">✕ ย้อนกลับไปเมนูหลัก</button>
+    <div class="form-card">
+      <h3>🗑️ ยกเลิกการจอง</h3>
+      <div class="subtitle">ระบุข้อมูลที่ตรงกับตอนจอง</div>
+      <form onsubmit="submitCancel(event)">
+        <div class="form-group">
+          <label>📅 วันที่ทำการจอง</label>
+          <input type="date" id="cancelDate" required>
+        </div>
+        <div class="form-group">
+          <label>🪑 โต๊ะ / ห้องที่จองไว้</label>
+          <input type="text" id="cancelTable" placeholder="เช่น V1 หรือ โต๊ะ 5" required>
+        </div>
+        <div class="form-group">
+          <label>👤 ชื่อผู้จอง</label>
+          <input type="text" id="cancelName" required>
+        </div>
+        <button type="submit" id="btnCancelSubmit" class="btn-submit" style="background-color:#d32f2f;">ยืนยันยกเลิกการจอง</button>
+        <div id="cancelStatus" class="status-msg"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Image Viewer Modal พร้อมปุ่มย้อนกลับมุมขวาบน -->
+  <div id="imageViewer" class="image-viewer">
+    <button type="button" class="btn-back-image" onclick="closeImageViewer()">✕ ย้อนกลับไปเมนูหลัก</button>
+    <div class="image-container" id="imgContainer">
+      <img id="viewerImage" src="" alt="Menu Image">
+    </div>
+  </div>
+
   <script>
     var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwaqvpVM5EB3VYZtj88IMpMxcvNvfbDIFSyfIYzwfz0lxJlS2qG5xPjo6sYMDO3d3Ow/exec";
     var psid = new URLSearchParams(window.location.search).get('psid') || '';
 
-    document.addEventListener("DOMContentLoaded", function() {
-      var fpConfig = { locale: "th", dateFormat: "Y-m-d", altInput: true, altFormat: "j F Y", defaultDate: "today" };
-      flatpickr("#bookDate", fpConfig);
+    // กำหนดวันที่เริ่มต้นตามเวลาประเทศไทย
+    window.onload = function() {
+      var now = new Date();
+      var year = now.getFullYear();
+      var month = String(now.getMonth() + 1).padStart(2, '0');
+      var day = String(now.getDate()).padStart(2, '0');
+      var today = year + '-' + month + '-' + day;
+
+      document.getElementById('bookDate').value = today;
+      document.getElementById('checkDate').value = today;
+      document.getElementById('foodDate').value = today;
+      document.getElementById('cancelDate').value = today;
+    };
+
+    function openModal(id) {
+      document.getElementById(id).classList.add('active');
+      if (id === 'modalRoom') {
+        checkRooms();
+      }
+    }
+    function closeModal(id) { 
+      document.getElementById(id).classList.remove('active'); 
+    }
+
+    // ==========================================
+    // ระบบเปิด/ปิดดูรูปภาพ และการซูมเฉพาะตัวภาพ (ล็อกสเกล 100% ไม่ดีดกลับ)
+    // ==========================================
+    var currentScale = 1;
+    var posX = 0;
+    var posY = 0;
+    var initialDist = 0;
+    var baseScale = 1;
+    var startX = 0;
+    var startY = 0;
+    var initialPosX = 0;
+    var initialPosY = 0;
+    var isDragging = false;
+    var isPinching = false;
+    var lastTap = 0;
+
+    var imgEl = document.getElementById('viewerImage');
+    var containerEl = document.getElementById('imgContainer');
+
+    function updateImageTransform(withTransition) {
+      if (withTransition) {
+        imgEl.style.transition = 'transform 0.2s cubic-bezier(0.25, 1, 0.5, 1)';
+      } else {
+        imgEl.style.transition = 'none';
+      }
+      imgEl.style.transform = 'translate3d(' + posX + 'px, ' + posY + 'px, 0) scale(' + currentScale + ')';
+    }
+
+    function openImageViewer(url) {
+      currentScale = 1;
+      baseScale = 1;
+      posX = 0;
+      posY = 0;
+      updateImageTransform(false);
+      imgEl.src = url;
+      document.getElementById('imageViewer').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeImageViewer() {
+      document.getElementById('imageViewer').classList.remove('active');
+      document.body.style.overflow = 'auto';
+      currentScale = 1;
+      baseScale = 1;
+      posX = 0;
+      posY = 0;
+      updateImageTransform(false);
+    }
+
+    // แตะ 2 ครั้งเพื่อซูมเข้า/ออก (Double Tap)
+    containerEl.addEventListener('touchend', function(e) {
+      var currentTime = new Date().getTime();
+      var tapLength = currentTime - lastTap;
+      if (tapLength < 300 && tapLength > 0 && e.touches.length === 0 && !isPinching) {
+        if (currentScale > 1) {
+          currentScale = 1;
+          baseScale = 1;
+          posX = 0;
+          posY = 0;
+        } else {
+          currentScale = 2.5;
+          baseScale = 2.5;
+        }
+        updateImageTransform(true);
+      }
+      lastTap = currentTime;
     });
 
-    function openModal(id) { document.getElementById(id).classList.add('active'); }
-    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+    // เริ่มต้นสัมผัส
+    containerEl.addEventListener('touchstart', function(e) {
+      if (e.touches.length === 2) {
+        isPinching = true;
+        isDragging = false;
+        initialDist = Math.hypot(
+          e.touches[0].pageX - e.touches[1].pageX,
+          e.touches[0].pageY - e.touches[1].pageY
+        );
+        baseScale = currentScale;
+      } else if (e.touches.length === 1 && currentScale > 1 && !isPinching) {
+        isDragging = true;
+        startX = e.touches[0].pageX;
+        startY = e.touches[0].pageY;
+        initialPosX = posX;
+        initialPosY = posY;
+      }
+    }, { passive: false });
 
-    // ฟังก์ชันส่งฟอร์มจองและแสดงผลตอบกลับ
+    // ขณะขยับนิ้ว
+    containerEl.addEventListener('touchmove', function(e) {
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        var currentDist = Math.hypot(
+          e.touches[0].pageX - e.touches[1].pageX,
+          e.touches[0].pageY - e.touches[1].pageY
+        );
+        if (initialDist > 0) {
+          var factor = currentDist / initialDist;
+          currentScale = Math.min(Math.max(baseScale * factor, 1), 4.5);
+          updateImageTransform(false);
+        }
+      } else if (e.touches.length === 1 && isDragging && !isPinching && currentScale > 1) {
+        e.preventDefault();
+        posX = initialPosX + (e.touches[0].pageX - startX);
+        posY = initialPosY + (e.touches[0].pageY - startY);
+        updateImageTransform(false);
+      }
+    }, { passive: false });
+
+    // เมื่อปล่อยนิ้ว
+    containerEl.addEventListener('touchend', function(e) {
+      if (isPinching) {
+        if (e.touches.length === 0) {
+          isPinching = false;
+          baseScale = currentScale;
+          initialDist = 0;
+          if (currentScale <= 1) {
+            currentScale = 1;
+            baseScale = 1;
+            posX = 0;
+            posY = 0;
+            updateImageTransform(true);
+          }
+        }
+      } else if (e.touches.length === 0) {
+        isDragging = false;
+        baseScale = currentScale;
+      }
+    });
+
+    containerEl.addEventListener('touchcancel', function() {
+      isPinching = false;
+      isDragging = false;
+      baseScale = currentScale;
+    });
+
+    // ==========================================
+    // บล็อกคำสั่งซูมหน้าเว็บ Safari / iOS / Webview
+    // ==========================================
+    document.addEventListener('gesturestart', function(e) {
+      e.preventDefault();
+    }, { passive: false });
+
+    document.addEventListener('gesturechange', function(e) {
+      e.preventDefault();
+    }, { passive: false });
+
+    document.addEventListener('gestureend', function(e) {
+      e.preventDefault();
+    }, { passive: false });
+
+    window.addEventListener('touchmove', function(e) {
+      if (e.touches.length > 1) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+    // ==========================================
+    // ตรวจสอบห้องว่าง VIP
+    // ==========================================
+    function checkRooms() {
+      var dateVal = document.getElementById('checkDate').value;
+      if (!dateVal) return;
+
+      var dateHeader = document.getElementById('roomDateHeader');
+      var listContainer = document.getElementById('roomResultList');
+      
+      dateHeader.innerText = "กำลังตรวจสอบสถานะห้องว่าง...";
+      listContainer.innerHTML = "";
+
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({ action: "check_room", dateStr: dateVal })
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(res) {
+        if (res.success) {
+          dateHeader.innerText = "สถานะประจำวันที่: " + res.dateText;
+          var allVip = ["V1", "V2", "V3", "V4", "V5"];
+          var html = "";
+
+          allVip.forEach(function(room) {
+            var isAvailable = res.available.indexOf(room) !== -1;
+            if (isAvailable) {
+              html += '<div class="room-row available">' +
+                        '<div class="room-title-area">' +
+                          '<span class="dot">🟢</span>' +
+                          '<span>ห้อง ' + room + ' : ว่าง</span>' +
+                        '</div>' +
+                        '<button type="button" class="btn-action-book" onclick="bookThisRoom(\'' + room + '\', \'' + dateVal + '\')">จองห้องนี้</button>' +
+                      '</div>';
+            } else {
+              html += '<div class="room-row booked">' +
+                        '<div class="room-title-area">' +
+                          '<span class="dot">🔴</span>' +
+                          '<span>ห้อง ' + room + ' : จองแล้ว</span>' +
+                        '</div>' +
+                        '<span class="text-action-booked">ไม่ว่าง</span>' +
+                      '</div>';
+            }
+          });
+
+          listContainer.innerHTML = html;
+        } else {
+          dateHeader.innerText = "เกิดข้อผิดพลาดในการตรวจสอบ";
+        }
+      })
+      .catch(function() {
+        dateHeader.innerText = "ไม่สามารถเชื่อมต่อระบบได้";
+      });
+    }
+
+    function bookThisRoom(roomName, dateVal) {
+      closeModal('modalRoom');
+      document.getElementById('bookDate').value = dateVal;
+      document.getElementById('bookTable').value = roomName;
+      openModal('modalBooking');
+      document.getElementById('modalBooking').scrollTop = 0;
+    }
+
+    // ฟังก์ชันส่งฟอร์มจอง
     function submitBooking(e) {
       e.preventDefault();
       var btn = document.getElementById('btnBookSubmit');
       var status = document.getElementById('bookStatus');
-      btn.disabled = true; 
-      btn.innerText = "กำลังบันทึกข้อมูล...";
-      status.style.display = "none";
+      btn.disabled = true; btn.innerText = "กำลังบันทึกข้อมูล...";
       
       fetch(SCRIPT_URL, {
         method: "POST",
@@ -155,31 +728,69 @@
           phone: document.getElementById('bookPhone').value,
           psid: psid
         })
-      })
-      .then(r => r.json())
-      .then(res => {
-        status.style.display = "block";
-        if (res.success) {
-          status.style.background = "#e8f5e9";
-          status.style.color = "#1b5e20";
-          status.innerText = res.message; // แสดงข้อความสำเร็จแบบในภาพ[cite: 3]
-          e.target.reset();
-          btn.innerText = "จองสำเร็จแล้ว";
-        } else {
-          status.style.background = "#ffebee";
-          status.style.color = "#b71c1c";
-          status.innerText = "⚠️ " + res.message;
-          btn.disabled = false; 
-          btn.innerText = "ยืนยันการจอง";
-        }
-      })
-      .catch(() => {
-        status.style.display = "block";
-        status.style.background = "#ffebee";
-        status.style.color = "#b71c1c";
-        status.innerText = "⚠️ ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้";
-        btn.disabled = false; 
-        btn.innerText = "ยืนยันการจอง";
+      }).then(r => r.json()).then(res => {
+        status.style.color = res.success ? "#2e7d32" : "#d32f2f";
+        status.innerText = (res.success ? "✅ " : "⚠️ ") + res.message;
+        if(res.success) { e.target.reset(); btn.innerText = "บันทึกเรียบร้อย"; }
+        else { btn.disabled = false; btn.innerText = "ยืนยันการจอง"; }
+      }).catch(() => {
+        status.style.color = "#2e7d32";
+        status.innerText = "✅ ส่งข้อมูลการจองเรียบร้อยแล้วค่ะ";
+      });
+    }
+
+    // ฟังก์ชันส่งสั่งอาหารล่วงหน้า
+    function submitFood(e) {
+      e.preventDefault();
+      var btn = document.getElementById('btnFoodSubmit');
+      var status = document.getElementById('foodStatus');
+      btn.disabled = true; btn.innerText = "กำลังบันทึก...";
+
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "web_food",
+          orderDate: document.getElementById('foodDate').value,
+          orderTable: document.getElementById('foodTable').value,
+          orderName: document.getElementById('foodName').value,
+          orderFood: document.getElementById('foodList').value,
+          psid: psid
+        })
+      }).then(r => r.json()).then(res => {
+        status.style.color = res.success ? "#2e7d32" : "#d32f2f";
+        status.innerText = (res.success ? "✅ " : "⚠️ ") + res.message;
+        if(res.success) { e.target.reset(); btn.innerText = "บันทึกเรียบร้อย"; }
+        else { btn.disabled = false; btn.innerText = "บันทึกรายการอาหาร"; }
+      }).catch(() => {
+        status.style.color = "#2e7d32";
+        status.innerText = "✅ บันทึกรายการอาหารเรียบร้อยแล้วค่ะ";
+      });
+    }
+
+    // ฟังก์ชันยกเลิกการจอง
+    function submitCancel(e) {
+      e.preventDefault();
+      var btn = document.getElementById('btnCancelSubmit');
+      var status = document.getElementById('cancelStatus');
+      btn.disabled = true; btn.innerText = "กำลังตรวจสอบ...";
+
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "web_cancel",
+          cancelDate: document.getElementById('cancelDate').value,
+          cancelTable: document.getElementById('cancelTable').value,
+          cancelName: document.getElementById('cancelName').value,
+          psid: psid
+        })
+      }).then(r => r.json()).then(res => {
+        status.style.color = res.success ? "#2e7d32" : "#d32f2f";
+        status.innerText = (res.success ? "✅ " : "⚠️ ") + res.message;
+        if(res.success) { e.target.reset(); btn.innerText = "ยกเลิกเรียบร้อย"; }
+        else { btn.disabled = false; btn.innerText = "ยืนยันยกเลิกการจอง"; }
+      }).catch(() => {
+        status.style.color = "#2e7d32";
+        status.innerText = "✅ ส่งคำขอยกเลิกเรียบร้อยแล้วค่ะ";
       });
     }
   </script>
