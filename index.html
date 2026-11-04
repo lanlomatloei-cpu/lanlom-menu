@@ -339,11 +339,11 @@
           <select id="bookTable" required>
             <option value="">-- กรุณาเลือก --</option>
             <option value="ด้านนอก">โต๊ะโซนปกติ</option>
-            <option value="V1">ห้อง V1</option>
-            <option value="V2">ห้อง V2</option>
-            <option value="V3">ห้อง V3</option>
-            <option value="V4">ห้อง V4</option>
-            <option value="V5">ห้อง V5</option>
+            <option value="V1">ห้อง VIP: V1</option>
+            <option value="V2">ห้อง VIP: V2</option>
+            <option value="V3">ห้อง VIP: V3</option>
+            <option value="V4">ห้อง VIP: V4</option>
+            <option value="V5">ห้อง VIP: V5</option>
           </select>
         </div>
         <div class="form-group">
@@ -387,12 +387,8 @@
       
       <div class="form-group">
         <label>📅 เลือกวันเดือนปีที่ต้องการตรวจสอบ</label>
-        <!-- เพิ่ม onchange="checkRooms()" เพื่อให้ตรวจสอบอัตโนมัติทันทีที่เปลี่ยนวันที่ -->
         <input type="date" id="checkDate" onchange="checkRooms()">
       </div>
-
-      <!-- ซ่อนปุ่มเดิมไว้ เพราะระบบตรวจเช็กให้อัตโนมัติทันที -->
-      <button type="button" class="btn-submit" onclick="checkRooms()" style="display: none;">ตรวจสอบห้องว่าง</button>
 
       <div id="roomDateHeader" class="date-status-badge"></div>
       
@@ -413,7 +409,15 @@
         </div>
         <div class="form-group">
           <label>🪑 โต๊ะ / ห้องที่จองไว้</label>
-          <input type="text" id="foodTable" placeholder="เช่น V1 หรือ โต๊ะ 5" required>
+          <select id="foodTable" required>
+            <option value="">-- กรุณาเลือก --</option>
+            <option value="ด้านนอก">โต๊ะโซนปกติ</option>
+            <option value="V1">ห้อง VIP: V1</option>
+            <option value="V2">ห้อง VIP: V2</option>
+            <option value="V3">ห้อง VIP: V3</option>
+            <option value="V4">ห้อง VIP: V4</option>
+            <option value="V5">ห้อง VIP: V5</option>
+          </select>
         </div>
         <div class="form-group">
           <label>👤 ชื่อผู้จอง (ตรงกับที่ระบุตอนจอง)</label>
@@ -442,7 +446,15 @@
         </div>
         <div class="form-group">
           <label>🪑 โต๊ะ / ห้องที่จองไว้</label>
-          <input type="text" id="cancelTable" placeholder="เช่น V1 หรือ โต๊ะ 5" required>
+          <select id="cancelTable" required>
+            <option value="">-- กรุณาเลือก --</option>
+            <option value="ด้านนอก">โต๊ะโซนปกติ</option>
+            <option value="V1">ห้อง VIP: V1</option>
+            <option value="V2">ห้อง VIP: V2</option>
+            <option value="V3">ห้อง VIP: V3</option>
+            <option value="V4">ห้อง VIP: V4</option>
+            <option value="V5">ห้อง VIP: V5</option>
+          </select>
         </div>
         <div class="form-group">
           <label>👤 ชื่อผู้จอง</label>
